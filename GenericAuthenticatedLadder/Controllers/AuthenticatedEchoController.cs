@@ -9,7 +9,7 @@ namespace GenericAuthenticatedLadder.Controllers
 {
     public class AuthenticatedEchoController : ControllerBase
     {
-        [Authorize, HttpGet("echo")]
+        [HttpGet("echo")]
         public async Task<JsonResult> DoAuthenticatedEcho()
         {
             var jwt = await HttpContext.Authentication.GetAuthenticateInfoAsync("Bearer");
