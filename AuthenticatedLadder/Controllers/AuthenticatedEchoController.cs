@@ -1,22 +1,32 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AuthenticatedLadder.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GenericAuthenticatedLadder.Controllers
 {
     public class AuthenticatedEchoController : ControllerBase
     {
-        [HttpGet("echo")]
-        public async Task<JsonResult> DoAuthenticatedEcho()
+        private ITokenDecoderService _decoderService;
+        public AuthenticatedEchoController(ITokenDecoderService decoderService)
         {
-            var jwt = Request.Headers["Authorization"];
-            //TODO se jwt isNullOrEmpty return 401
-            //TODO splittare Bearer 123.123.123 con ' '
-            //TODO decodare jwt, se non decoda 401
-            return new JsonResult(jwt);
+            _decoderService = decoderService;
+        }
+
+        [HttpGet("echo")]
+        public async Task<IActionResult> DoAuthenticatedEcho()
+        {
+            var payload = _decoderService.Decode(GetBearerToken());
+
+            if (payload == null)
+                return Unauthorized();
+
+            return new JsonResult(payload);
+        }
+
+        private string GetBearerToken()
+        {
+            var authorizationHeaderContent = Request.Headers["Authorization"].ToString().Split(' ');
+            return authorizationHeaderContent.Length == 2 ? authorizationHeaderContent[1] : null;
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Jose;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Text;
 
 namespace AuthenticatedLadder.Services
 {
-    public class JWTService
+    public class JWTService : ITokenDecoderService
     {
         private string _jwtSecret;
 
@@ -13,7 +14,7 @@ namespace AuthenticatedLadder.Services
             _jwtSecret = jwtSecret;
         }
 
-        public JObject Decode(String bearerToken)
+        public JObject Decode(string bearerToken)
         {
             JObject result = null;
             if (!string.IsNullOrEmpty(bearerToken))
