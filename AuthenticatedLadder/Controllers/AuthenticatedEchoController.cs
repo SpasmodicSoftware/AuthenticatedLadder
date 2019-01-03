@@ -13,7 +13,7 @@ namespace GenericAuthenticatedLadder.Controllers
         }
 
         [HttpGet("echo")]
-        public async Task<IActionResult> DoAuthenticatedEcho()
+        public IActionResult DoAuthenticatedEcho()
         {
             var payload = _decoderService.Decode(GetBearerToken());
 
