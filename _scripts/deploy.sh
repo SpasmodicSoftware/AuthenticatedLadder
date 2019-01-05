@@ -3,8 +3,6 @@
 set -x
 if [ $TRAVIS_BRANCH == 'master' ] ; then
     # Initialize a new git repo in _deploy, and push it to our server.
-    mkdir _deploy
-    cd _deploy
     git init
         
     git remote add deploy "mnemosyne@165.227.132.89:/home/mnemosyne/authenticatedLadder"
