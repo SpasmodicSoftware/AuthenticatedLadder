@@ -3,9 +3,12 @@ mono: none
 dotnet: 2.2.100
 sudo: required
 dist: xenial
-script:
-- dotnet restore
-- dotnet test
 before_install:
-- openssl aes-256-cbc -K $encrypted_d9a44da3c1b2_key -iv $encrypted_d9a44da3c1b2_iv
-  -in autenticatedLadderDeploy.enc -out autenticatedLadderDeploy -d
+  - openssl aes-256-cbc -K $encrypted_d9a44da3c1b2_key -iv $encrypted_d9a44da3c1b2_iv -in autenticatedLadderDeploy.enc -out autenticatedLadderDeploy -d
+  - chmod 600 autenticatedLadderDeploy
+  - mv autenticatedLadderDeploy ~/.ssh/id_rsa
+script:
+  - dotnet restore
+  - dotnet test
+after_success:
+  - bash _scripts/deploy.sh
