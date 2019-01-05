@@ -7,7 +7,7 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_d9a44da3c1b2_key -iv $encrypted_d9a44da3c1b2_iv -in autenticatedLadderDeploy.enc -out autenticatedLadderDeploy -d
   - chmod 600 autenticatedLadderDeploy
   - mv autenticatedLadderDeploy ~/.ssh/id_rsa
-  - echo "----------------------- Before install done" 
+  - ssh-keyscan 165.227.132.89 >> ~/.ssh/known_hosts
 script:
   - dotnet restore
   - dotnet test

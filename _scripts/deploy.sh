@@ -10,7 +10,6 @@ if [ $TRAVIS_BRANCH == 'master' ] ; then
     git config user.email "nomadster+authenticatedLadderTravisCI@gmail.com"
     
     git add .
-    CURRENT_DATE=datetime
     git commit -m date | xargs echo "Deploy $1"
     git push --force deploy master
 else
