@@ -7,12 +7,13 @@ if [ $TRAVIS_BRANCH == 'master' ] ; then
     cd _deploy
     git init
         
-    git remote add deploy "mnemosyne@"
+    git remote add deploy "mnemosyne@165.227.132.89:/home/mnemosyne/authenticatedLadder"
     git config user.name "Travis CI"
     git config user.email "nomadster+authenticatedLadderTravisCI@gmail.com"
     
     git add .
-    git commit -m "Deploy"
+    CURRENT_DATE=datetime
+    git commit -m date | xargs echo "Deploy $1"
     git push --force deploy master
 else
     echo "Not deploying, since this branch isn't master."
