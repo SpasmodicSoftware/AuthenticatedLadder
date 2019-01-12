@@ -16,6 +16,8 @@ namespace AuthenticatedLadder.Services
 
         public JObject Decode(string bearerToken)
         {
+            //TODO qui fare che riceviamo l'Authorization token, quindi "Bearer 123128097e8091cnbjs8d3092" e quindi splittarlo etcetc
+            //così il middleware viene più semplice. E poi questa è una logica legata al JWT
             JObject result = null;
             if (!string.IsNullOrEmpty(bearerToken))
             {

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticatedLadder", "Auth
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticatedLadder.UnitTests", "AuthenticatedLadder.UnitTests\AuthenticatedLadder.UnitTests.csproj", "{DFBF2521-66D7-4C16-9B44-1E246AD80D62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticatedLadder.IntegrationTests", "AuthenticatedLadder.IntegrationTests\AuthenticatedLadder.IntegrationTests.csproj", "{53CE4E3E-4C09-4BE0-95D4-9DD7AE14908D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DFBF2521-66D7-4C16-9B44-1E246AD80D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFBF2521-66D7-4C16-9B44-1E246AD80D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFBF2521-66D7-4C16-9B44-1E246AD80D62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53CE4E3E-4C09-4BE0-95D4-9DD7AE14908D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53CE4E3E-4C09-4BE0-95D4-9DD7AE14908D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53CE4E3E-4C09-4BE0-95D4-9DD7AE14908D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53CE4E3E-4C09-4BE0-95D4-9DD7AE14908D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
