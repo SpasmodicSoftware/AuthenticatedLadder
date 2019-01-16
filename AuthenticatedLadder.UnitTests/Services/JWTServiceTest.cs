@@ -8,12 +8,12 @@ namespace AuthenticatedLadder.UnitTests.Services
 {
     public class JWTServiceTest
     {
-        const string _superSecret = "SuperSecret";
+        const string workingSecret = "SuperSecret";
         private JWTService _jwtService;
 
         public JWTServiceTest()
         {
-            _jwtService = new JWTService(_superSecret);
+            _jwtService = new JWTService(workingSecret);
         }
 
         [Theory]
@@ -41,7 +41,7 @@ namespace AuthenticatedLadder.UnitTests.Services
                 { "exp", 1300819380 }
             };
 
-            string token = JWT.Encode(payload, "top secret", JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
+            string token = JWT.Encode(payload, "a different secret", JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
 
             var result = _jwtService.Decode(token);
             Assert.Null(result);
@@ -57,7 +57,7 @@ namespace AuthenticatedLadder.UnitTests.Services
                 { "exp", 1300819380 }
             };
 
-            string token = JWT.Encode(payload, _superSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
+            string token = JWT.Encode(payload, workingSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
             var result = _jwtService.Decode(token);
 
             Assert.NotNull(result);
