@@ -33,6 +33,10 @@ namespace AuthenticatedLadder.Services
                 {
                     //TODO log error invalid token
                 }
+                catch (IndexOutOfRangeException)
+                {
+                    //TODO log the fact that someone is trying to pass us some random crap
+                }
             }
 
             return result;

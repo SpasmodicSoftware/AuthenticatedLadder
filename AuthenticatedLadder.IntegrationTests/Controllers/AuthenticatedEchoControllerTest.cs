@@ -21,7 +21,7 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
         }
 
         [Fact]
-        public async Task Get_ReturnsUnauthorizedIfNoValidJWT()
+        public async Task Get_ReturnsUnauthorizedIfNoAuthorizationHeaderPassed()
         {
             var client = _factory.CreateClient();
 
@@ -31,7 +31,18 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
         }
 
         [Fact]
-        public async Task Get_EchoReturnsYourPayloadIfAuthenticated()
+        public async Task Get_ReturnsUnauthorizedIfNoValidJWTPassedAsAuthorizationHeader()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer 23409238nuc2ur0ifope");
+
+            var response = await client.GetAsync("/echo");
+
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Get_ReturnsYourPayloadIfPayloadSignedWithValidJWTAuthentication()
         {
             var testSecretKey = "TestSecretKey";
             var client = _factory.WithWebHostBuilder(builder =>

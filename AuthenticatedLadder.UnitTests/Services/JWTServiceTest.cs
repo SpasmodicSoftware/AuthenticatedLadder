@@ -16,8 +16,11 @@ namespace AuthenticatedLadder.UnitTests.Services
             _jwtService = new JWTService(_superSecret);
         }
 
-        [Fact]
-        public void IfBearerTokenIsGibberishReturnsNull()
+        [Theory]
+        [InlineData("Random.Gibberish.stuff")]
+        [InlineData("23409238nuc2ur0ifope")]
+        [InlineData(null)]
+        public void IfBearerTokenIsGibberishReturnsNull(string gibberishValue)
         {
             var result = _jwtService.Decode("");
             Assert.Null(result);
@@ -25,7 +28,7 @@ namespace AuthenticatedLadder.UnitTests.Services
             result = _jwtService.Decode(null);
             Assert.Null(result);
 
-            result = _jwtService.Decode("Random.Gibberish.stuff");
+            result = _jwtService.Decode(gibberishValue);
             Assert.Null(result);
         }
 
