@@ -18,14 +18,18 @@ namespace AuthenticatedLadder.Middlewares
         public async Task Invoke(HttpContext context, ITokenDecoderService decoder)
         {
             var payload = _decoder.Decode(GetBearerToken(context.Request));
-            if (payload == null)
+            if (payload != null)
             {
-                //TODO: tornare 401
+                context.Items["JWTSignedPayload"] = payload;
+
+                await _next(context);
+            }
+            else
+            {
+                context.Response.StatusCode = 401;
             }
 
-            context.Items["JWTSignedPayload"] = payload;
 
-            await _next(context);
         }
 
         private string GetBearerToken(HttpRequest request)

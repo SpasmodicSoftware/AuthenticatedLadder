@@ -27,7 +27,6 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
 
             var response = await client.GetAsync("/echo");
 
-            Assert.False(response.IsSuccessStatusCode);
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
