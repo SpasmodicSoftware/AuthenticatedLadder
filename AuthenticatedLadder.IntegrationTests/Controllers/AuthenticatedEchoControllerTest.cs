@@ -60,7 +60,6 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
 
             var response = await client.GetAsync("/echo");
 
-            Assert.True(response.IsSuccessStatusCode);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             var responsePayload = JsonConvert.DeserializeObject<JObject>(

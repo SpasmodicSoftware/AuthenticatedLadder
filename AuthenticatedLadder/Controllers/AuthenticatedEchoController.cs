@@ -1,12 +1,14 @@
 ﻿using AuthenticatedLadder.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace GenericAuthenticatedLadder.Controllers
 {
     public class AuthenticatedEchoController : ControllerBase
     {
         private ITokenDecoderService _decoderService;
+
         public AuthenticatedEchoController(ITokenDecoderService decoderService)
         {
             _decoderService = decoderService;
@@ -15,18 +17,8 @@ namespace GenericAuthenticatedLadder.Controllers
         [HttpGet("echo")]
         public IActionResult DoAuthenticatedEcho()
         {
-            var payload = _decoderService.Decode(GetBearerToken());
-
-            if (payload == null)
-                return Unauthorized();
-
-            return new JsonResult(payload);
+            return new JsonResult(Request.HttpContext.Items["JWTSignedPayload"]);
         }
 
-        private string GetBearerToken()
-        {
-            var authorizationHeaderContent = Request.Headers["Authorization"].ToString().Split(' ');
-            return authorizationHeaderContent.Length == 2 ? authorizationHeaderContent[1] : null;
-        }
     }
 }
