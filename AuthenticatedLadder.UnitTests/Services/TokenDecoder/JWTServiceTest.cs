@@ -1,10 +1,10 @@
-﻿using AuthenticatedLadder.Services;
+﻿using System.Collections.Generic;
+using AuthenticatedLadder.Services.TokenDecoder;
 using Jose;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using Xunit;
 
-namespace AuthenticatedLadder.UnitTests.Services
+namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
 {
     public class JWTServiceTest
     {

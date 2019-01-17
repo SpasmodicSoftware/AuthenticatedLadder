@@ -1,6 +1,6 @@
-﻿using AuthenticatedLadder.Services;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using AuthenticatedLadder.Services.TokenDecoder;
 
 namespace AuthenticatedLadder.Middlewares
 {

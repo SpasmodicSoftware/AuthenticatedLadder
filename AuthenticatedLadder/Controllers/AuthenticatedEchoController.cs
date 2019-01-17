@@ -1,6 +1,6 @@
-﻿using AuthenticatedLadder.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using AuthenticatedLadder.Services.TokenDecoder;
 using Microsoft.AspNetCore.Http;
 
 namespace GenericAuthenticatedLadder.Controllers

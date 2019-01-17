@@ -1,9 +1,8 @@
-﻿using Jose;
+﻿using System;
+using Jose;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Text;
 
-namespace AuthenticatedLadder.Services
+namespace AuthenticatedLadder.Services.TokenDecoder
 {
     public class JWTService : ITokenDecoderService
     {
