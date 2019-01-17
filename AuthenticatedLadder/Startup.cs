@@ -28,11 +28,13 @@ namespace GenericAuthenticatedLadder
 
             services.AddTransient<ITokenDecoderService, JWTService>();
 
-            services.Configure<JWTPayloadMiddlewareSettings>(options =>
+            services.AddOptions<JWTPayloadMiddlewareSettings>()
+                .Configure(o =>
                 {
-                    options.HeaderName = Configuration["JWT:HeaderName"];
-                    options.DecodeSecret = Configuration["JWT:DecodeSecret"];
-                });
+                    o.HeaderName = Configuration["JWT:HeaderName"];
+                    o.DecodeSecret = Configuration["JWT:DecodeSecret"];
+                })
+                .Validate(o => o.isValidConfiguration(), "JWTPayloadMiddlewareSettings not properly set");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

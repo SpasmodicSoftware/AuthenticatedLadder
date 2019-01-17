@@ -9,5 +9,11 @@ namespace AuthenticatedLadder.Middlewares
     {
         public string HeaderName { get; set; }
         public string DecodeSecret { get; set; }
+
+        public bool isValidConfiguration()
+        {
+            return !string.IsNullOrEmpty(HeaderName) 
+                   && !string.IsNullOrEmpty(DecodeSecret);
+        }
     }
 }
