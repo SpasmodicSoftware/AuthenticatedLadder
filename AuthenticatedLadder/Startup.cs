@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AuthenticatedLadder.ExtensionMethods;
+using AuthenticatedLadder.Middlewares;
 using AuthenticatedLadder.Services.TokenDecoder;
 
 namespace GenericAuthenticatedLadder
@@ -27,6 +28,11 @@ namespace GenericAuthenticatedLadder
 
             var verySecretKey = Configuration["JWT:Secret"];
             services.AddTransient<ITokenDecoderService>(s => new JWTService(verySecretKey));
+
+            services.Configure<JWTPayloadMiddlewareSettings>(options => new JWTPayloadMiddlewareSettings
+            {
+                HeaderName = Configuration["JWT:HeaderName"]
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
