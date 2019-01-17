@@ -26,13 +26,13 @@ namespace GenericAuthenticatedLadder
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            var verySecretKey = Configuration["JWT:Secret"];
-            services.AddTransient<ITokenDecoderService>(s => new JWTService(verySecretKey));
+            services.AddTransient<ITokenDecoderService, JWTService>();
 
-            services.Configure<JWTPayloadMiddlewareSettings>(options => new JWTPayloadMiddlewareSettings
-            {
-                HeaderName = Configuration["JWT:HeaderName"]
-            });
+            services.Configure<JWTPayloadMiddlewareSettings>(options =>
+                {
+                    options.HeaderName = Configuration["JWT:HeaderName"];
+                    options.DecodeSecret = Configuration["JWT:DecodeSecret"];
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

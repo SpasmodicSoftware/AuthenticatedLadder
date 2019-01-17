@@ -6,23 +6,17 @@ namespace AuthenticatedLadder.Services.TokenDecoder
 {
     public class JWTService : ITokenDecoderService
     {
-        private string _jwtSecret;
 
-        public JWTService(string jwtSecret)
-        {
-            _jwtSecret = jwtSecret;
-        }
-
-        public JObject Decode(string bearerToken)
+        public JObject Decode(string secret, string bearerToken)
         {
             //TODO qui fare che riceviamo l'Authorization token, quindi "Bearer 123128097e8091cnbjs8d3092" e quindi splittarlo etcetc
             //così il middleware viene più semplice. E poi questa è una logica legata al JWT
             JObject result = null;
-            if (!string.IsNullOrEmpty(bearerToken))
+            if (!string.IsNullOrEmpty(bearerToken) && !string.IsNullOrEmpty(secret))
             {
                 try
                 {
-                    result = JWT.Decode<JObject>(bearerToken, _jwtSecret);
+                    result = JWT.Decode<JObject>(bearerToken, secret);
                 }
                 catch (IntegrityException)
                 {

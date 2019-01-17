@@ -8,5 +8,6 @@ namespace AuthenticatedLadder.Middlewares
     public class JWTPayloadMiddlewareSettings
     {
         public string HeaderName { get; set; }
+        public string DecodeSecret { get; set; }
     }
 }

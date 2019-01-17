@@ -20,7 +20,7 @@ namespace AuthenticatedLadder.Middlewares
 
         public async Task Invoke(HttpContext context, ITokenDecoderService decoder)
         {
-            var payload = _decoder.Decode(GetBearerToken(context.Request));
+            var payload = _decoder.Decode(_settings.DecodeSecret, GetBearerToken(context.Request));
             if (payload != null)
             {
                 context.Items["JWTSignedPayload"] = payload;
@@ -37,8 +37,7 @@ namespace AuthenticatedLadder.Middlewares
 
         private string GetBearerToken(HttpRequest request)
         {
-            var authorizationHeaderContent = request.Headers["Authorization"].ToString().Split(' ');
-            return authorizationHeaderContent.Length == 2 ? authorizationHeaderContent[1] : null;
+            return request.Headers[_settings.HeaderName].ToString();
         }
     }
 }

@@ -13,22 +13,17 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
 
         public JWTServiceTest()
         {
-            _jwtService = new JWTService(workingSecret);
+            _jwtService = new JWTService();
         }
 
         [Theory]
         [InlineData("Random.Gibberish.stuff")]
         [InlineData("23409238nuc2ur0ifope")]
+        [InlineData("")]
         [InlineData(null)]
         public void IfBearerTokenIsGibberishReturnsNull(string gibberishValue)
         {
-            var result = _jwtService.Decode("");
-            Assert.Null(result);
-
-            result = _jwtService.Decode(null);
-            Assert.Null(result);
-
-            result = _jwtService.Decode(gibberishValue);
+            var result = _jwtService.Decode(workingSecret, gibberishValue);
             Assert.Null(result);
         }
 
@@ -41,15 +36,15 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
                 { "exp", 1300819380 }
             };
 
-            string token = JWT.Encode(payload, "a different secret", JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
+            var token = JWT.Encode(payload, "a different secret", JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
 
-            var result = _jwtService.Decode(token);
+            var result = _jwtService.Decode(workingSecret, token);
             Assert.Null(result);
 
         }
 
         [Fact]
-        public void IFBearerTokenIsMadeWithCorrectSecretDecodesItAndReturnsJsonPayload()
+        public void IfBearerTokenIsMadeWithCorrectSecretDecodesItAndReturnsJsonPayload()
         {
             var payload = new JObject()
             {
@@ -57,11 +52,24 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
                 { "exp", 1300819380 }
             };
 
-            string token = JWT.Encode(payload, workingSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
-            var result = _jwtService.Decode(token);
+            var token = JWT.Encode(payload, workingSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
+            var result = _jwtService.Decode(workingSecret, token);
 
             Assert.NotNull(result);
             Assert.True(JObject.DeepEquals(payload, result));
+        }
+
+        [Fact]
+        public void IfSecretIsNullReturnsNull()
+        {
+            var payload = new JObject()
+            {
+                { "sub", "mr.x@contoso.com" },
+                { "exp", 1300819380 }
+            };
+
+            var token = JWT.Encode(payload, workingSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
+            Assert.Null(_jwtService.Decode(null, token));
         }
     }
 }
