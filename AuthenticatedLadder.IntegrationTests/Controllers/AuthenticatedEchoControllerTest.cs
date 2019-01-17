@@ -35,8 +35,7 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
         public async Task Get_ReturnsUnauthorizedIfNoValidJWTPassedAsAuthorizationHeader()
         {
             var client = _factory.CreateClient();
-            //client.DefaultRequestHeaders.Add("Authorization", "Bearer 23409238nuc2ur0ifope");
-            client.DefaultRequestHeaders.Add(_testHeaderName, "Bearer 23409238nuc2ur0ifope");
+            client.DefaultRequestHeaders.Add(_testHeaderName, "23409238nuc2ur0ifope");
 
             var response = await client.GetAsync("/echo");
 
@@ -69,7 +68,7 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             var token = JWT.Encode(payload, testSecretKey,
                 JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
 
-            client.DefaultRequestHeaders.Add(_testHeaderName, $"Bearer {token}");
+            client.DefaultRequestHeaders.Add(_testHeaderName, token);
 
             var response = await client.GetAsync("/echo");
 
@@ -108,7 +107,7 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             var token = JWT.Encode(payload, testSecretKey,
                 JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
 
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            client.DefaultRequestHeaders.Add("Authorization", token);
 
             var response = await client.GetAsync("/echo");
 
