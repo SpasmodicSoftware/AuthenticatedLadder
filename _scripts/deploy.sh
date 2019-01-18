@@ -3,7 +3,7 @@
 set -x
 if [ $TRAVIS_BRANCH == 'master' ] ; then
         docker build -t spasmodicsoftware/authenticated-ladder:latest .
-	echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+	docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 	docker push spasmodicsoftware/authenticated-ladder:latest
     # Initialize a new git repo in _deploy, and push it to our server.
         
