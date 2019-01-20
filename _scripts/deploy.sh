@@ -3,7 +3,8 @@
 set -x
 if [ $TRAVIS_BRANCH == 'master' ] ; then
         docker build -t spasmodicsoftware/authenticated-ladder:latest .
-	docker images
+	docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+	docker push spasmodicsoftware/authenticated-ladder:latest
     # Initialize a new git repo in _deploy, and push it to our server.
         
 #    git remote add deploy "mnemosyne@165.227.132.89:/home/mnemosyne/authenticatedLadder"
