@@ -22,7 +22,7 @@ namespace AuthenticatedLadder.Persistence
                 .HasKey(l => new { l.LadderId, l.Platform });
 
             modelBuilder.Entity<LadderEntry>()
-                .Property(l => l.EntryDate)
+                .Property<DateTime>("EntryDate")
                 .ValueGeneratedOnAddOrUpdate();
         }
     }
