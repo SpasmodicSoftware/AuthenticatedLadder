@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AuthenticatedLadder.ExtensionMethods;
 using AuthenticatedLadder.Middlewares;
+using AuthenticatedLadder.Persistence;
 using AuthenticatedLadder.Services.TokenDecoder;
 
 namespace GenericAuthenticatedLadder
@@ -35,6 +36,9 @@ namespace GenericAuthenticatedLadder
                     o.DecodeSecret = Configuration["JWT:DecodeSecret"];
                 })
                 .Validate(o => o.isValidConfiguration(), "JWTPayloadMiddlewareSettings not properly set");
+            services.AddOptions<LadderRepositorySettings>()
+                .Configure(o => { o.Length = int.Parse(Configuration["LadderRepositorySettings:Length"]); })
+                .Validate(o => o.IsValidConfiguration(), "LadderRepositorySettings not properly set");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
