@@ -7,8 +7,8 @@ namespace AuthenticatedLadder.DomainModels
 {
     public interface ILadderRepository
     {
-        Task<List<LadderEntry>> GetTopNEntries(string ladderId, string platform, long numEntries);
-        Task<LadderEntry> Upsert(LadderEntry entry);
-        Task<LadderEntry> GetEntryForUser(string ladderId, string platform, string username);
+        List<LadderEntry> GetTopEntries(string ladderId, string platform);
+        LadderEntry Upsert(LadderEntry entry);
+        LadderEntry GetEntryForUser(string ladderId, string platform, string username);
     }
 }

@@ -19,11 +19,11 @@ namespace AuthenticatedLadder.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LadderEntry>()
-                .HasKey(l => new { l.LadderId, l.Platform });
+                .HasKey(l => new { l.LadderId, l.Platform, l.Username });
 
-            modelBuilder.Entity<LadderEntry>()
-                .Property<DateTime>("EntryDate")
-                .ValueGeneratedOnAddOrUpdate();
+            //modelBuilder.Entity<LadderEntry>()
+            //    .Property<DateTime>("EntryDate")
+            //    .ValueGeneratedOnAddOrUpdate();
         }
     }
 }
