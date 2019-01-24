@@ -35,7 +35,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
         }
 
         [Fact]
-        public void GetTopNEntries()
+        public void GetTopNEntriesForSpecifiedLadderAndPlatform()
         {
             var TopN = 1;
             var ladderId = "myLadder";
