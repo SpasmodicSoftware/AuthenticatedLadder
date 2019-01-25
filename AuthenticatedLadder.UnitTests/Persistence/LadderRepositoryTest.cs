@@ -33,7 +33,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 
         //List<LadderEntry> GetTopEntries(string ladderId, string platform);
         [Fact]
-        public void GetTopEntries_ReturnsTopNEntriesForSpecifiedLadderAndPlatform()
+        public void GetTopEntries_ReturnsTopNEntriesForSpecifiedLadder()
         {
             var TopN = 1;
             var ladderId = "myLadder";
@@ -60,18 +60,26 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 Username = "second player",
                 Score = 1
             };
+            var anotherLadderPlayer = new LadderEntry
+            {
+                LadderId = "AnotherLadder",
+                Platform = platform,
+                Username = "second player",
+                Score = 1
+            };
 
             _dbContext.Ladders.Add(secondPlayer);
             _dbContext.Ladders.Add(firstPlayer);
             _dbContext.Ladders.Add(anotherPlatformPlayer);
+            _dbContext.Ladders.Add(anotherLadderPlayer);
             _dbContext.SaveChanges();
 
             var repository = CreateInMemoryRepository(TopN);
 
-            var result = repository.GetTopEntries(ladderId, platform);
+            var result = repository.GetTopEntries(ladderId);
             Assert.Single(result);
 
-            Assert.Equal(firstPlayer, result[0]);
+            Assert.Equal(anotherPlatformPlayer, result[0]);
         }
 
         [Fact]
@@ -101,19 +109,27 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 Username = "second player",
                 Score = 1
             };
+            var anotherLadderPlayer = new LadderEntry
+            {
+                LadderId = "AnotherLadder",
+                Platform = platform,
+                Username = "second player",
+                Score = 1
+            };
 
             _dbContext.Ladders.Add(secondPlayer);
             _dbContext.Ladders.Add(firstPlayer);
             _dbContext.Ladders.Add(anotherPlatformPlayer);
+            _dbContext.Ladders.Add(anotherLadderPlayer);
             _dbContext.SaveChanges();
 
             var repository = CreateInMemoryRepository(TopN);
 
-            var result = repository.GetTopEntries(ladderId, platform);
+            var result = repository.GetTopEntries(ladderId);
 
             Assert.Equal(2, result.Count);
-            Assert.Equal(firstPlayer, result[0]);
-            Assert.Equal(secondPlayer, result[1]);
+            Assert.Equal(anotherPlatformPlayer, result[0]);
+            Assert.Equal(firstPlayer, result[1]);
         }
 
         public void GetTopEntries_GetAllEntriesIfDBHasLessThanNEntriesForThatPlatformAndLadder() { }
