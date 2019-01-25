@@ -1,4 +1,5 @@
-﻿using AuthenticatedLadder.DomainModels;
+﻿using System;
+using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -132,7 +133,10 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             Assert.Equal(firstPlayer, result[1]);
         }
 
-        public void GetTopEntries_GetAllEntriesIfDBHasLessThanNEntriesForThatPlatformAndLadder() { }
+        public void GetTopEntries_GetAllEntriesIfDBHasLessThanNEntriesForThatPlatformAndLadder()
+        {
+            throw new NotImplementedException();
+        }
         //[Fact]
         //public void GetTopEntries_() { }
         //[Fact]
