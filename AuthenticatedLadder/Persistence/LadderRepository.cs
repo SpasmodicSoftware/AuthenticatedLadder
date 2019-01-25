@@ -1,10 +1,8 @@
-﻿using System;
+﻿using AuthenticatedLadder.DomainModels;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AuthenticatedLadder.DomainModels;
-using Microsoft.Extensions.Options;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
 
 namespace AuthenticatedLadder.Persistence
 {
@@ -12,6 +10,11 @@ namespace AuthenticatedLadder.Persistence
     {
         private int _numEntries;
         private LadderDBContext _dbContext;
+
+        private long computeCurrentPosition(string ladderId, long score)
+        {
+            return _dbContext.Ladders.Count(l => l.LadderId == ladderId && l.Score < score ) + 1;
+        }
 
         public LadderRepository(LadderDBContext dbContext, IOptions<LadderRepositorySettings> settings)
         {
@@ -33,33 +36,36 @@ namespace AuthenticatedLadder.Persistence
 
         public LadderEntry Upsert(LadderEntry entry)
         {
-            var existingEntry = _dbContext.Ladders
-                .Where(l => l.LadderId == entry.LadderId 
-                            && l.Platform == entry.Platform 
+            var resultingEntry = _dbContext.Ladders
+                .Where(l => l.LadderId == entry.LadderId
+                            && l.Platform == entry.Platform
                             && l.Username == entry.Username)
                 .FirstOrDefault();
-            if (existingEntry != null)
+            if (resultingEntry != null)
             {
-                existingEntry.Score = existingEntry.Score < entry.Score 
-                    ? existingEntry.Score : entry.Score;
+                resultingEntry.Score = resultingEntry.Score < entry.Score
+                    ? resultingEntry.Score : entry.Score;
             }
             else
             {
                 _dbContext.Ladders.Add(entry);
+                resultingEntry = entry;
             }
             _dbContext.SaveChanges();
-            return existingEntry ?? entry;
+
+            resultingEntry.Position = computeCurrentPosition(resultingEntry.LadderId, resultingEntry.Score);
+            return resultingEntry;
         }
 
         public LadderEntry GetEntryForUser(string ladderId, string platform, string username)
         {
-            var result =_dbContext.Ladders
+            var result = _dbContext.Ladders
                 .FirstOrDefault(l => l.LadderId == ladderId
                                      && l.Platform == platform
                                      && l.Username == username);
             if (result != null)
             {
-                result.Position = _dbContext.Ladders.Count(l => l.Score < result.Score && l.LadderId == result.LadderId) + 1;
+                result.Position = computeCurrentPosition(result.LadderId, result.Score);
             }
 
             return result;

@@ -335,6 +335,35 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             Assert.Equal(2, _dbContext.Ladders.Count());
 
         }
+        [Fact]
+        public void Upsert_PopulatesPlayerPosition()
+        {
+            var topN = 5;
+            var ladderId = "myLadder";
+            var playerName = "My Player";
+            var firstEntry = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = "PC",
+                Username = playerName,
+                Score = 1000
+            };
+            var secondEntryDifferentPlatform = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = "PS4",
+                Username = playerName,
+                Score = 3000
+            };
+
+            var repository = CreateInMemoryRepository(topN);
+            repository.Upsert(firstEntry);
+            var result = repository.Upsert(secondEntryDifferentPlatform);
+
+            Assert.Equal(2, _dbContext.Ladders.Count());
+            Assert.Equal(secondEntryDifferentPlatform, result);
+            Assert.Equal(2, result.Position);
+        }
 
         //LadderEntry GetEntryForUser(string ladderId, string platform, string username);
         [Fact]
