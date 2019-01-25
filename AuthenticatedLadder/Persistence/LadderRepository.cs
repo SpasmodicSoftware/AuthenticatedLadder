@@ -21,6 +21,9 @@ namespace AuthenticatedLadder.Persistence
 
         public List<LadderEntry> GetTopEntries(string ladderId, string platform)
         {
+            //TODO use a config flag in order to identify which orderby use
+            //this is usefult if score is number of point or if it is
+            //seconds elapsed from game start
             return _dbContext.Ladders
                 .Where(l => l.LadderId == ladderId && l.Platform == platform)
                 .OrderBy(l => l.Score)

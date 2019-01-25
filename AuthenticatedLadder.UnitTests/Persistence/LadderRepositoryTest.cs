@@ -11,7 +11,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 {
     public class LadderRepositoryTest
     {
-        private LadderDBContext _dbContext;
+        private readonly LadderDBContext _dbContext;
 
         private ILadderRepository CreateInMemoryRepository(int ladderLength)
         {
@@ -35,7 +35,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
         }
 
         [Fact]
-        public void GetTopNEntriesForSpecifiedLadderAndPlatform()
+        public void GetTopEntries_ReturnsTopNEntriesForSpecifiedLadderAndPlatform()
         {
             var TopN = 1;
             var ladderId = "myLadder";
@@ -49,12 +49,12 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 Score = 1000
             };
             var firstPlayer = new LadderEntry
-                {
-                    LadderId = ladderId,
-                    Platform = platform,
-                    Username = "first player",
-                    Score = 999
-                };
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "first player",
+                Score = 999
+            };
             var anotherPlatformPlayer = new LadderEntry
             {
                 LadderId = ladderId,
@@ -74,6 +74,48 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             Assert.Single(result);
 
             Assert.Equal(firstPlayer, result[0]);
+        }
+
+        [Fact]
+        public void GetTopEntries_ReturnsTopNEntriesOrderedByScore()
+        {
+            var TopN = 2;
+            var ladderId = "myLadder";
+            var platform = "PC";
+            var secondPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "second player",
+                Score = 1000
+            };
+            var firstPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "first player",
+                Score = 999
+            };
+            var anotherPlatformPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = "AnotherPlatform",
+                Username = "second player",
+                Score = 1
+            };
+
+            _dbContext.Ladders.Add(secondPlayer);
+            _dbContext.Ladders.Add(firstPlayer);
+            _dbContext.Ladders.Add(anotherPlatformPlayer);
+            _dbContext.SaveChanges();
+
+            var repository = CreateInMemoryRepository(TopN);
+
+            var result = repository.GetTopEntries(ladderId, platform);
+
+            Assert.Equal(2, result.Count);
+            Assert.Equal(firstPlayer, result[0]);
+            Assert.Equal(secondPlayer, result[1]);
         }
 
     }
