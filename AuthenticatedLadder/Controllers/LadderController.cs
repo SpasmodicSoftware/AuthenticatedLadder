@@ -26,7 +26,7 @@ namespace AuthenticatedLadder.Controllers
             throw new NotImplementedException();
         }
 
-        [Route("{ladderId}/{username}"), HttpGet]
+        [Route("{ladderId}/{platform}/{username}"), HttpGet]
         public LadderEntry GetPlayerPosition(string ladderId, string platform, string username)
         {
             throw new NotImplementedException();
