@@ -333,18 +333,26 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 Platform = "Another Platform",
                 Username = playerName,
                 Score = 500
+            };            
+            var fourthEntry = new LadderEntry
+            {
+                LadderId = "Another Ladder",
+                Platform = "Another Platform",
+                Username = playerName,
+                Score = 500
             };
 
             _dbContext.Ladders.Add(firstEntry);
             _dbContext.Ladders.Add(secondEntry);
             _dbContext.Ladders.Add(thirdEntry);
+            _dbContext.Ladders.Add(fourthEntry);
             _dbContext.SaveChanges();
 
             var repository = CreateInMemoryRepository(topN);
 
-            var result = repository.GetEntryForUser(ladderId, platform, playerName);
+            var result = repository.GetEntryForUser(ladderId, "Another Platform", playerName);
             Assert.NotNull(result);
-            Assert.Equal(firstEntry, result);
+            Assert.Equal(thirdEntry, result);
             Assert.Equal(1,result.Position);
         }
         //[Fact]

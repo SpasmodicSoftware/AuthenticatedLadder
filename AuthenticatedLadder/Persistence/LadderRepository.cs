@@ -59,7 +59,7 @@ namespace AuthenticatedLadder.Persistence
                                      && l.Username == username);
             if (result != null)
             {
-                result.Position = _dbContext.Ladders.Count(l => l.Score < result.Score) + 1;
+                result.Position = _dbContext.Ladders.Count(l => l.Score < result.Score && l.LadderId == result.LadderId) + 1;
             }
 
             return result;
