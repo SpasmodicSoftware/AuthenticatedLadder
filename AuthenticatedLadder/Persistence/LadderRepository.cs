@@ -40,22 +40,25 @@ namespace AuthenticatedLadder.Persistence
                 .FirstOrDefault();
             if (existingEntry != null)
             {
-                existingEntry.Score = entry.Score;
+                existingEntry.Score = existingEntry.Score < entry.Score 
+                    ? existingEntry.Score : entry.Score;
             }
             else
             {
                 _dbContext.Ladders.Add(entry);
             }
             _dbContext.SaveChanges();
-            return entry;
+            return existingEntry ?? entry;
         }
 
         public LadderEntry GetEntryForUser(string ladderId, string platform, string username)
         {
-            return _dbContext.Ladders
+            var result =_dbContext.Ladders
                 .FirstOrDefault(l => l.LadderId == ladderId
                                      && l.Platform == platform
                                      && l.Username == username);
+            result.Position = _dbContext.Ladders.Count(l => l.Score < result.Score);
+            return result;
         }
     }
 }

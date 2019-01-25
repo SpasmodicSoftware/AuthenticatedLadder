@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Dynamic;
 
 namespace AuthenticatedLadder.DomainModels
@@ -10,6 +11,8 @@ namespace AuthenticatedLadder.DomainModels
         public string Username { get; set; }
         //This represents seconds of gameplay. The less the better
         public long Score { get; set; }
+        [NotMapped]
+        public long Position { get; set; }
 
         public override bool Equals(object obj)
         {
