@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +34,6 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             _dbContext = dbContext;
         }
 
-        //List<LadderEntry> GetTopEntries(string ladderId, string platform);
         [Fact]
         public void GetTopEntries_ReturnsTopNEntriesForSpecifiedLadder()
         {
@@ -134,24 +135,86 @@ namespace AuthenticatedLadder.UnitTests.Persistence
         }
 
         [Fact]
-        public void GetTopEntries_GetAllEntriesIfDBHasLessThanNEntriesForThatPlatformAndLadder()
+        public void GetTopEntries_GetAllEntriesIfDBHasLessThanNEntriesForThatLadder()
         {
-            throw new NotImplementedException();
+            var TopN = 10;
+            var ladderId = "myLadder";
+            var platform = "PC";
+            var secondPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "second player",
+                Score = 1000
+            };
+
+            _dbContext.Ladders.Add(secondPlayer);
+            _dbContext.SaveChanges();
+
+            var repository = CreateInMemoryRepository(TopN);
+
+            var result = repository.GetTopEntries(ladderId);
+
+            Assert.Single(result);
+            Assert.Equal(secondPlayer, result[0]);
         }
-        //[Fact]
-        //public void GetTopEntries_() { }
-        //[Fact]
-        //public void GetTopEntries_() { }
-        //[Fact]
-        //public void GetTopEntries_() { }
 
         //LadderEntry Upsert(LadderEntry entry);
         [Fact]
-        public void Upsert_InsertEntryIfNotAlreadyPresent() { }
+        public void Upsert_SuccessfullyInsertNewEntriesRegardingTheTopPlayerLadderSize()
+        {
+            var TopPlayerLadderSize = 2;
+            var ladderId = "myLadder";
+            var platform = "PC";
+            var usernames = new[] {"second player", "first player", "second player"};
+            var players = new List<LadderEntry>
+            {
+                new LadderEntry
+                {
+                    LadderId = ladderId,
+                    Platform = platform,
+                    Username = usernames[0],
+                    Score = 1000
+                },
+                new LadderEntry
+                {
+                    LadderId = ladderId,
+                    Platform = platform,
+                    Username = usernames[1],
+                    Score = 999
+                },
+                new LadderEntry
+                {
+                    LadderId = ladderId,
+                    Platform = "AnotherPlatform",
+                    Username = usernames[2],
+                    Score = 1
+                }
+            };
+
+            var repository = CreateInMemoryRepository(TopPlayerLadderSize);
+
+            foreach (var ladderEntry in players)
+            {
+                var result = repository.Upsert(ladderEntry);
+                Assert.NotNull(result);
+            }
+
+            var dbEntries = _dbContext.Ladders
+                .Where(l => true)
+                .OrderByDescending(l => l.Score)
+                .ToList();
+            Assert.Equal(3, dbEntries.Count);
+
+            for (var i = 0; i < 3; ++i)
+            {
+                Assert.Equal(dbEntries[i], players[i]);
+            }
+        }
         [Fact]
         public void Upsert_UpdateEntryIfAlreadyExistAndIfTheScoreIsBetter() { }
-        //[Fact]
-        //public void Upsert_() { }
+        [Fact]
+        public void Upsert_UsernameIsUniquePerPlatformAndPerLadderId() { }
         //[Fact]
         //public void Upsert_() { }
 
