@@ -21,14 +21,14 @@ namespace AuthenticatedLadder.Persistence
 
         public List<LadderEntry> GetTopEntries(string ladderId)
         {
-            //TODO use a config flag in order to identify which orderby use
-            //this is usefult if score is number of point or if it is
-            //seconds elapsed from game start
-            return _dbContext.Ladders
+            var result = _dbContext.Ladders
                 .Where(l => l.LadderId == ladderId)
                 .OrderBy(l => l.Score)
                 .Take(_numEntries)
                 .ToList();
+            var i = 0;
+            result.ForEach(l => l.Position = (i++) + 1);
+            return result;
         }
 
         public LadderEntry Upsert(LadderEntry entry)

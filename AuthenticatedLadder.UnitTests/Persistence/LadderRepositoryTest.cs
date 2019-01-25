@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AuthenticatedLadder.DomainModels;
+﻿using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace AuthenticatedLadder.UnitTests.Persistence
@@ -85,7 +84,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
         }
 
         [Fact]
-        public void GetTopEntries_ReturnsTopNEntriesOrderedByScore()
+        public void GetTopEntries_ReturnsTopNEntriesOrderedByScoreTheLessTheBetter()
         {
             var TopN = 2;
             var ladderId = "myLadder";
@@ -160,12 +159,66 @@ namespace AuthenticatedLadder.UnitTests.Persistence
         }
 
         [Fact]
+        public void GetTopEntries_PopulatesPlayerPosition()
+        {
+            var TopN = 2;
+            var ladderId = "myLadder";
+            var platform = "PC";
+            var secondPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "second player",
+                Score = 1000
+            };
+            var firstPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "first player",
+                Score = 999
+            };
+            var anotherPlatformPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = "AnotherPlatform",
+                Username = "second player",
+                Score = 1
+            };
+            var anotherLadderPlayer = new LadderEntry
+            {
+                LadderId = "AnotherLadder",
+                Platform = platform,
+                Username = "second player",
+                Score = 1
+            };
+
+            _dbContext.Ladders.Add(secondPlayer);
+            _dbContext.Ladders.Add(firstPlayer);
+            _dbContext.Ladders.Add(anotherPlatformPlayer);
+            _dbContext.Ladders.Add(anotherLadderPlayer);
+            _dbContext.SaveChanges();
+
+
+            var repository = CreateInMemoryRepository(TopN);
+
+            var result = repository.GetTopEntries(ladderId);
+
+            Assert.Equal(2, result.Count);
+            Assert.Equal(anotherPlatformPlayer, result[0]);
+            Assert.Equal(firstPlayer, result[1]);
+            for (var i = 0; i < result.Count; ++i)
+            {
+                Assert.Equal(i + 1, result[i].Position);
+            }
+        }
+        [Fact]
         public void Upsert_SuccessfullyInsertNewEntriesRegardingTheTopPlayerLadderSize()
         {
             var TopPlayerLadderSize = 2;
             var ladderId = "myLadder";
             var platform = "PC";
-            var usernames = new[] {"second player", "first player", "second player"};
+            var usernames = new[] { "second player", "first player", "second player" };
             var players = new List<LadderEntry>
             {
                 new LadderEntry
@@ -319,7 +372,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 Platform = platform,
                 Username = playerName,
                 Score = 1001
-            };            
+            };
             var secondEntry = new LadderEntry
             {
                 LadderId = ladderId,
@@ -333,7 +386,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 Platform = "Another Platform",
                 Username = playerName,
                 Score = 500
-            };            
+            };
             var fourthEntry = new LadderEntry
             {
                 LadderId = "Another Ladder",
@@ -353,7 +406,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             var result = repository.GetEntryForUser(ladderId, "Another Platform", playerName);
             Assert.NotNull(result);
             Assert.Equal(thirdEntry, result);
-            Assert.Equal(1,result.Position);
+            Assert.Equal(1, result.Position);
         }
         //[Fact]
         //public void GetEntryForUser_() { }
