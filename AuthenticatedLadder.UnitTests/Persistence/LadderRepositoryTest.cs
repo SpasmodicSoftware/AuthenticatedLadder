@@ -133,6 +133,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             Assert.Equal(firstPlayer, result[1]);
         }
 
+        [Fact]
         public void GetTopEntries_GetAllEntriesIfDBHasLessThanNEntriesForThatPlatformAndLadder()
         {
             throw new NotImplementedException();
