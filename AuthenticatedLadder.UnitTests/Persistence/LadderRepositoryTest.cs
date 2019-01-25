@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AuthenticatedLadder.DomainModels;
+﻿using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -34,6 +31,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             _dbContext = dbContext;
         }
 
+        //List<LadderEntry> GetTopEntries(string ladderId, string platform);
         [Fact]
         public void GetTopEntries_ReturnsTopNEntriesForSpecifiedLadderAndPlatform()
         {
@@ -117,6 +115,34 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             Assert.Equal(firstPlayer, result[0]);
             Assert.Equal(secondPlayer, result[1]);
         }
+
+        public void GetTopEntries_GetAllEntriesIfDBHasLessThanNEntriesForThatPlatformAndLadder() { }
+        //[Fact]
+        //public void GetTopEntries_() { }
+        //[Fact]
+        //public void GetTopEntries_() { }
+        //[Fact]
+        //public void GetTopEntries_() { }
+
+        //LadderEntry Upsert(LadderEntry entry);
+        [Fact]
+        public void Upsert_InsertEntryIfNotAlreadyPresent() { }
+        [Fact]
+        public void Upsert_UpdateEntryIfAlreadyExistAndIfTheScoreIsBetter() { }
+        //[Fact]
+        //public void Upsert_() { }
+        //[Fact]
+        //public void Upsert_() { }
+
+        //LadderEntry GetEntryForUser(string ladderId, string platform, string username);
+        //[Fact]
+        //public void GetEntryForUser_() { }
+        //[Fact]
+        //public void GetEntryForUser_() { }
+        //[Fact]
+        //public void GetEntryForUser_() { }
+        //[Fact]
+        //public void GetEntryForUser_() { }
 
     }
 }
