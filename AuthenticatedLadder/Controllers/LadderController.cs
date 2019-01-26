@@ -11,7 +11,7 @@ namespace AuthenticatedLadder.Controllers
     {
         public LadderController()
         {
-
+            //TODO Injectare LadderService e Logger
         }
 
         [Route("{ladderId}"), HttpGet]
