@@ -9,6 +9,5 @@ before_install:
   - mv autenticatedLadderDeploy ~/.ssh/id_rsa
   - echo "$DO_SSH_FINGERPRINT" >> ~/.ssh/known_hosts
 script:
-  - dotnet restore
-  - dotnet test
+  - bash _scripts/minicover.sh
   - bash _scripts/deploy.sh
