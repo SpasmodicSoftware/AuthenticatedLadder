@@ -9,5 +9,5 @@ dotnet minicover instrument --workdir ../ --assemblies */bin/**/*.dll --sources 
 cd ..
 for project in *Tests/*.csproj; do dotnet test --no-build $project || exit 2; done
 cd minicover
-dotnet minicover coverallsreport --workdir ../ || exit 3
+dotnet minicover coverallsreport --workdir ../ --repo-token "$COVERALLS_TOKEN" || exit 3
 cd ..
