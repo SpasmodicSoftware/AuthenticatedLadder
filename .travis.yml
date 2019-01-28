@@ -10,4 +10,4 @@ before_install:
   - echo "$DO_SSH_FINGERPRINT" >> ~/.ssh/known_hosts
 script:
   - bash _scripts/minicover.sh
-  - bash _scripts/deploy.sh
+  - bash _scripts/publish.sh
