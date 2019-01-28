@@ -13,7 +13,7 @@ dotnet build
 
 #We now instrument minicover to create coverage data
 cd minicover
-dotnet minicover instrument --workdir ../ --assemblies */bin/**/*.dll --sources AuthenticatedLadder/**/*.cs --exclude-sources AuthenticatedLadder/Startup.cs --exclude-sources AuthenticatedLadder/Program.cs
+dotnet minicover instrument --workdir ../ --assemblies */bin/**/*.dll --exclude-sources AuthenticatedLadder/Startup.cs --exclude-sources AuthenticatedLadder/Program.cs --sources AuthenticatedLadder/**/*.cs
 cd ..
 for project in *Tests/*.csproj; do dotnet test --no-build $project; done
 
