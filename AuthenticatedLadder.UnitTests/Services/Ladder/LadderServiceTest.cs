@@ -97,7 +97,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         [Fact(Skip = "TODO")]
         public void GetTopEntries_ReturnTopEntriesOfGivenLadder() { }
 
-        [Fact("TODO")]
+        [Fact(Skip = "TODO")]
         public void GetTopEntries_LogsErrorAndThrowsWhenRepositoryThrows() { }
 
     }
