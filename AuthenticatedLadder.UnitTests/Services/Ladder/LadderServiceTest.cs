@@ -73,9 +73,32 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
             Assert.Equal(myEntry, result);
         }
 
-        //TODO
-        //[Fact]
-        //public void GetEntryForUser_LogsErrorAndThrowsWhenRepositoryThrows() { }
+        [Fact(Skip = "TODO")]
+        public void GetEntryForUser_LogsErrorAndThrowsWhenRepositoryThrows() { }
+
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void GetTopEntries_ReturnsEmptyListIfLadderIdIsNullOrEmpty(string ladderId)
+        {
+
+            var service = new LadderService(_repository.Object);
+
+            var result = service.GetTopEntries(ladderId);
+
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Fact(Skip = "TODO")]
+        public void GetTopEntries_ReturnsEmptyListIfLadderIdIsOkButServerHasNoEntryForThatLadder() { }
+
+        [Fact(Skip = "TODO")]
+        public void GetTopEntries_ReturnTopEntriesOfGivenLadder() { }
+
+        [Fact("TODO")]
+        public void GetTopEntries_LogsErrorAndThrowsWhenRepositoryThrows() { }
 
     }
 }

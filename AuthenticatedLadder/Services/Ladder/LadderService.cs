@@ -44,7 +44,6 @@ namespace AuthenticatedLadder.Services.Ladder
 
             if (!string.IsNullOrEmpty(ladderId))
             {
-
                 try
                 {
                     result = _repository.GetTopEntries(ladderId);
