@@ -100,5 +100,36 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         [Fact(Skip = "TODO")]
         public void GetTopEntries_LogsErrorAndThrowsWhenRepositoryThrows() { }
 
+        [Fact]
+        public void Upsert_ReturnsNullWhenNullIsPassed()
+        {
+            var service = new LadderService(_repository.Object);
+
+            Assert.Null(service.Upsert(null));
+        }
+
+        [Fact]
+        public void Upsert_ReturnsTheUpdatedOrInsertedEntryIfEverythingIsOK()
+        {
+            var entry = new LadderEntry
+            {
+                LadderId = "My Ladder",
+                Platform = "PC",
+                Username = "My Username"
+            };
+
+            _repository
+                .Setup(r => r.Upsert(entry))
+                .Returns(() => entry);
+
+            var service = new LadderService(_repository.Object);
+
+            Assert.Equal(entry, service.Upsert(entry));
+        }
+
+        [Fact(Skip = "TODO")]
+        public void Upsert_LogsErrorAndThrowsWhenRepositoryThrows() { }
+
+
     }
 }
