@@ -1,6 +1,6 @@
-﻿using System;
+﻿using AuthenticatedLadder.DomainModels;
+using System;
 using System.Collections.Generic;
-using AuthenticatedLadder.DomainModels;
 
 namespace AuthenticatedLadder.Services.Ladder
 {
@@ -22,19 +22,18 @@ namespace AuthenticatedLadder.Services.Ladder
 
         public LadderEntry GetEntryForUser(string ladderId, string platform, string username)
         {
-            if(!isValidGetEntryForUserInput(ladderId,platform,username))
+            LadderEntry result = null;
+            if (isValidGetEntryForUserInput(ladderId, platform, username))
             {
-                return null;
-            }
-            LadderEntry result;
-            try
-            {
-                result = _repository.GetEntryForUser(ladderId, platform, username);
-            } 
-            catch(Exception)
-            {
-                //TODO log
-                throw;
+                try
+                {
+                    result = _repository.GetEntryForUser(ladderId, platform, username);
+                }
+                catch (Exception)
+                {
+                    //TODO log
+                    throw;
+                }
             }
             return result;
         }
@@ -62,13 +61,13 @@ namespace AuthenticatedLadder.Services.Ladder
         public LadderEntry Upsert(LadderEntry entry)
         {
             LadderEntry result = null;
-            if(entry != null)
+            if (entry != null)
             {
                 try
                 {
                     result = _repository.Upsert(entry);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     //TODO logme
                     throw;
