@@ -1,4 +1,5 @@
 ﻿using AuthenticatedLadder.DomainModels;
+using System.Collections.Generic;
 using Xunit;
 
 namespace AuthenticatedLadder.UnitTests.DomainModels
@@ -43,7 +44,7 @@ namespace AuthenticatedLadder.UnitTests.DomainModels
             var entry = new LadderEntry();
             Assert.False(entry.Equals(null));
         }
-                
+
         [Fact]
         public void EqualEntriesHaveSameHashCode()
         {
@@ -70,5 +71,13 @@ namespace AuthenticatedLadder.UnitTests.DomainModels
 
             Assert.Equal(entry1.GetHashCode(), entry2.GetHashCode());
         }
+
+        [Fact]
+        public void EntriesCanBeComparedOnlyWithOtherEntries()
+        {
+            Assert.False(new LadderEntry().Equals("string"));
+            Assert.False(new LadderEntry().Equals(new List<string>()));
+        }
+
     }
 }
