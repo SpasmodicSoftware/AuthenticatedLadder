@@ -10,6 +10,7 @@ using AuthenticatedLadder.ExtensionMethods;
 using AuthenticatedLadder.Middlewares;
 using AuthenticatedLadder.Persistence;
 using AuthenticatedLadder.Services.TokenDecoder;
+using AuthenticatedLadder.Middlewares.ErrorHandling;
 
 namespace GenericAuthenticatedLadder
 {
@@ -49,6 +50,7 @@ namespace GenericAuthenticatedLadder
                 app.UseDeveloperExceptionPage();
             }
 
+            app.ConfigureExceptionHandler();
             app.UseJWTPayloadMiddleware();
             app.UseMvc();
         }
