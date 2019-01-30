@@ -1,38 +1,46 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace AuthenticatedLadder.Middlewares.ErrorHandling
 {
-    public static class ErrorHandlingMiddleware
+    public class ErrorHandlingMiddleware
     {
-        public static void ConfigureExceptionHandler(this IApplicationBuilder app/*TODO, ILoggerManager logger*/)
+        private readonly RequestDelegate _next;
+        //TODO private readonly ILoggerManager _logger;
+
+        public ErrorHandlingMiddleware(RequestDelegate next)
         {
-            app.UseExceptionHandler(appError =>
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext httpContext)
+        {
+            try
             {
-                appError.Run(async context =>
+                await _next(httpContext);
+            }
+            catch (Exception)
+            {
+                //TODO: Loggare eccezione in error!
+                await HandleExceptionAsync(httpContext);
+            }
+        }
+
+        private async Task HandleExceptionAsync(HttpContext context)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(
+                new ErrorDetails()
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    context.Response.ContentType = "application/json";
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Oooops! Something went wrong. Call Alessandro :)"
+                }));
 
-                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextFeature != null)
-                    {
-                        //TODO ADD LOG FOR EXCEPTION
-                        //logger.LogError($"Something went wrong: {contextFeature.Error}");
-
-                        await context.Response.WriteAsync(JsonConvert.SerializeObject(
-                            new ErrorDetails()
-                            {
-                                StatusCode = context.Response.StatusCode,
-                                Message = "Oooops! Something went wrong. Call Alessandro."
-                            }
-                            ));
-                    }
-                });
-            });
         }
     }
 }

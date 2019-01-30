@@ -50,7 +50,7 @@ namespace GenericAuthenticatedLadder
                 app.UseDeveloperExceptionPage();
             }
 
-            app.ConfigureExceptionHandler();
+            app.UseErrorHandlingMiddleware();
             app.UseJWTPayloadMiddleware();
             app.UseMvc();
         }
