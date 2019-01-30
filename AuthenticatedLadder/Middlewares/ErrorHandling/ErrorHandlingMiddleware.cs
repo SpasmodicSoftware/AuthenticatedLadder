@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Newtonsoft.Json;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace AuthenticatedLadder.Middlewares.ErrorHandling
 {
@@ -26,11 +23,13 @@ namespace AuthenticatedLadder.Middlewares.ErrorHandling
                         //TODO ADD LOG FOR EXCEPTION
                         //logger.LogError($"Something went wrong: {contextFeature.Error}");
 
-                        await context.Response.WriteAsync(new ErrorDetails()
-                        {
-                            StatusCode = context.Response.StatusCode,
-                            Message = "Oooops! Something went wrong. Call Alessandro."
-                        }.ToString());
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(
+                            new ErrorDetails()
+                            {
+                                StatusCode = context.Response.StatusCode,
+                                Message = "Oooops! Something went wrong. Call Alessandro."
+                            }
+                            ));
                     }
                 });
             });
