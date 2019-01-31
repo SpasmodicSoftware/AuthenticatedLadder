@@ -448,8 +448,5 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             Assert.Equal(thirdEntry, result);
             Assert.Equal(1, result.Position);
         }
-        //[Fact]
-        //public void GetEntryForUser_() { }
-
     }
 }
