@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using AuthenticatedLadder.Services.TokenDecoder;
+﻿using AuthenticatedLadder.Services.TokenDecoder;
+using FluentAssertions;
 using Jose;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using Xunit;
 
 namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
@@ -23,8 +24,10 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
         [InlineData(null)]
         public void IfBearerTokenIsGibberishReturnsNull(string gibberishValue)
         {
-            var result = _jwtService.Decode(workingSecret, gibberishValue);
-            Assert.Null(result);
+            _jwtService
+                .Decode(workingSecret, gibberishValue)
+                .Should()
+                .BeNull();
         }
 
         [Fact]
@@ -38,9 +41,10 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
 
             var token = JWT.Encode(payload, "a different secret", JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
 
-            var result = _jwtService.Decode(workingSecret, token);
-            Assert.Null(result);
-
+            _jwtService
+                .Decode(workingSecret, token)
+                .Should()
+                .BeNull();
         }
 
         [Fact]
@@ -53,10 +57,11 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
             };
 
             var token = JWT.Encode(payload, workingSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
-            var result = _jwtService.Decode(workingSecret, token);
 
-            Assert.NotNull(result);
-            Assert.True(JObject.DeepEquals(payload, result));
+            _jwtService
+                .Decode(workingSecret, token)
+                .Should()
+                .BeEquivalentTo(payload);
         }
 
         [Fact]
@@ -69,7 +74,11 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
             };
 
             var token = JWT.Encode(payload, workingSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
-            Assert.Null(_jwtService.Decode(null, token));
+
+            _jwtService
+                .Decode(null, token)
+                .Should()
+                .BeNull();
         }
     }
 }

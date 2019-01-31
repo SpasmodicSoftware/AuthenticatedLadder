@@ -78,10 +78,11 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 
             var repository = CreateInMemoryRepository(TopN);
 
-            var result = repository.GetTopEntries(ladderId);
-            Assert.Single(result);
-
-            Assert.Equal(anotherPlatformPlayer, result[0]);
+            repository
+                .GetTopEntries(ladderId)
+                .Should()
+                .HaveCount(1)
+                .And.ContainEquivalentOf(anotherPlatformPlayer);
         }
 
         [Fact]
@@ -127,11 +128,12 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 
             var repository = CreateInMemoryRepository(TopN);
 
-            var result = repository.GetTopEntries(ladderId);
-
-            Assert.Equal(2, result.Count);
-            Assert.Equal(anotherPlatformPlayer, result[0]);
-            Assert.Equal(firstPlayer, result[1]);
+            repository
+                .GetTopEntries(ladderId)
+                .Should()
+                .HaveCount(2)
+                .And.HaveElementAt(0, anotherPlatformPlayer)
+                .And.HaveElementAt(1, firstPlayer);
         }
 
         [Fact]
@@ -153,10 +155,11 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 
             var repository = CreateInMemoryRepository(TopN);
 
-            var result = repository.GetTopEntries(ladderId);
-
-            Assert.Single(result);
-            Assert.Equal(secondPlayer, result[0]);
+            repository
+                .GetTopEntries(ladderId)
+                .Should()
+                .HaveCount(1)
+                .And.ContainEquivalentOf(secondPlayer);
         }
 
         [Fact]
@@ -177,14 +180,16 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 LadderId = ladderId,
                 Platform = platform,
                 Username = "first player",
-                Score = 999
+                Score = 999,
+                Position = 2
             };
             var anotherPlatformPlayer = new LadderEntry
             {
                 LadderId = ladderId,
                 Platform = "AnotherPlatform",
                 Username = "second player",
-                Score = 1
+                Score = 1,
+                Position = 1
             };
             var anotherLadderPlayer = new LadderEntry
             {
@@ -203,15 +208,12 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 
             var repository = CreateInMemoryRepository(TopN);
 
-            var result = repository.GetTopEntries(ladderId);
-
-            Assert.Equal(2, result.Count);
-            Assert.Equal(anotherPlatformPlayer, result[0]);
-            Assert.Equal(firstPlayer, result[1]);
-            for (var i = 0; i < result.Count; ++i)
-            {
-                Assert.Equal(i + 1, result[i].Position);
-            }
+            repository
+                .GetTopEntries(ladderId)
+                .Should()
+                .HaveCount(2)
+                .And.HaveElementAt(0, anotherPlatformPlayer)
+                .And.HaveElementAt(1, firstPlayer);
         }
         [Fact]
         public void Upsert_SuccessfullyInsertNewEntriesRegardingTheTopPlayerLadderSize()
@@ -299,7 +301,10 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             var result = repository.Upsert(firstEntry);
             repository.Upsert(secondEntryWorstScore);
 
-            Assert.Single(_dbContext.Ladders);
+            _dbContext
+                .Ladders
+                .Should()
+                .HaveCount(1);
 
             //Position is not relevant right now
             result.Position = 0;
@@ -309,7 +314,10 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 
             result = repository.Upsert(thirdEntryBetterScore);
 
-            Assert.Single(_dbContext.Ladders);
+            _dbContext
+                .Ladders
+                .Should()
+                .HaveCount(1);
 
             //Position is not relevant right now
             result.Position = 0;
@@ -343,7 +351,10 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             repository.Upsert(firstEntry);
             repository.Upsert(secondEntryDifferentPlatform);
 
-            Assert.Equal(2, _dbContext.Ladders.Count());
+            _dbContext
+                .Ladders
+                .Should()
+                .HaveCount(2);
 
         }
         [Fact]
@@ -364,16 +375,23 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 LadderId = ladderId,
                 Platform = "PS4",
                 Username = playerName,
-                Score = 3000
+                Score = 3000,
+                Position = 2
             };
 
             var repository = CreateInMemoryRepository(topN);
             repository.Upsert(firstEntry);
-            var result = repository.Upsert(secondEntryDifferentPlatform);
 
-            Assert.Equal(2, _dbContext.Ladders.Count());
-            Assert.Equal(secondEntryDifferentPlatform, result);
-            Assert.Equal(2, result.Position);
+            repository
+                .Upsert(secondEntryDifferentPlatform)
+                .Should()
+                .BeEquivalentTo(secondEntryDifferentPlatform);
+
+            _dbContext
+                .Ladders
+                .Should()
+                .HaveCount(2);
+
         }
 
         //LadderEntry GetEntryForUser(string ladderId, string platform, string username);
@@ -425,7 +443,8 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 LadderId = ladderId,
                 Platform = "Another Platform",
                 Username = playerName,
-                Score = 500
+                Score = 500,
+                Position = 1
             };
             var fourthEntry = new LadderEntry
             {
@@ -443,10 +462,11 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 
             var repository = CreateInMemoryRepository(topN);
 
-            var result = repository.GetEntryForUser(ladderId, "Another Platform", playerName);
-            Assert.NotNull(result);
-            Assert.Equal(thirdEntry, result);
-            Assert.Equal(1, result.Position);
+            repository
+                .GetEntryForUser(ladderId, "Another Platform", playerName)
+                .Should()
+                .NotBeNull()
+                .And.BeEquivalentTo(thirdEntry);
         }
     }
 }

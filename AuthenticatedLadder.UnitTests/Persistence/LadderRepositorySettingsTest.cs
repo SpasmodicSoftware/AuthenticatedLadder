@@ -1,7 +1,5 @@
 ﻿using AuthenticatedLadder.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using FluentAssertions;
 using Xunit;
 
 namespace AuthenticatedLadder.UnitTests.Persistence
@@ -14,11 +12,17 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             var settings = new LadderRepositorySettings();
 
             settings.Length = 0;
-            Assert.False(settings.IsValidConfiguration());
+            settings
+                .IsValidConfiguration()
+                .Should()
+                .BeFalse();
 
             settings.Length = 25;
-            Assert.True(settings.IsValidConfiguration());
-           
+            settings
+                .IsValidConfiguration()
+                .Should()
+                .BeTrue();
+
         }
     }
 }
