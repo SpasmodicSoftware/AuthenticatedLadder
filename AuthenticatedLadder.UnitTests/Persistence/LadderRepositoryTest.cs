@@ -1,5 +1,6 @@
 ﻿using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Persistence;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -299,12 +300,22 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             repository.Upsert(secondEntryWorstScore);
 
             Assert.Single(_dbContext.Ladders);
-            Assert.Equal(firstEntry, result);
+
+            //Position is not relevant right now
+            result.Position = 0;
+            result
+                .Should()
+                .BeEquivalentTo(firstEntry);
 
             result = repository.Upsert(thirdEntryBetterScore);
 
             Assert.Single(_dbContext.Ladders);
-            Assert.Equal(thirdEntryBetterScore, result);
+
+            //Position is not relevant right now
+            result.Position = 0;
+            result
+                .Should()
+                .BeEquivalentTo(thirdEntryBetterScore);
         }
 
         [Fact]
