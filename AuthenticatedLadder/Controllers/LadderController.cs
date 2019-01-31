@@ -1,35 +1,47 @@
 ﻿using AuthenticatedLadder.DomainModels;
+using AuthenticatedLadder.Services.Ladder;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Net.Http;
 
 namespace AuthenticatedLadder.Controllers
 {
     [Route("ladder")]
     public class LadderController : ControllerBase
     {
-        public LadderController()
+        private ILadderService _ladderService;
+
+        public LadderController(ILadderService ladderService)
         {
-            //TODO Injectare LadderService e Logger
+            //TODO Injectare Logger
+            _ladderService = ladderService;
         }
 
         [Route("{ladderId}"), HttpGet]
-        public IEnumerable<LadderEntry> GetTopForLadder(long ladderId)
+        public IEnumerable<LadderEntry> GetTopForLadder(string ladderId)
         {
-            throw new NotImplementedException();
+            return _ladderService.GetTopEntries(ladderId);
         }
 
-        [Route("{ladderId}"), HttpPost]
-        public HttpResponseMessage InsertOrUpdateEntry(long ladderId, LadderEntry entry)
+        [HttpPost]
+        public ActionResult InsertOrUpdateEntry([FromBody]LadderEntry entry)
         {
-            throw new NotImplementedException();
+            var result = _ladderService.Upsert(entry);
+            if (result == null)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
         }
 
         [Route("{ladderId}/{platform}/{username}"), HttpGet]
-        public LadderEntry GetPlayerPosition(string ladderId, string platform, string username)
+        public ActionResult GetPlayerPosition(string ladderId, string platform, string username)
         {
-            throw new NotImplementedException();
+            var result = _ladderService.GetEntryForUser(ladderId, platform, username);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
     }
 }
