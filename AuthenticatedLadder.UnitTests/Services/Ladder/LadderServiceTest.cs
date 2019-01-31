@@ -1,6 +1,8 @@
 ﻿using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Services.Ladder;
+using FluentAssertions;
 using Moq;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -32,7 +34,10 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
 
             var service = new LadderService(_repository.Object);
 
-            Assert.Null(service.GetEntryForUser(ladderId, platform, username));
+            service
+                .GetEntryForUser(ladderId, platform, username)
+                .Should()
+                .BeNull();
         }
 
         [Fact]
@@ -47,7 +52,10 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
 
             var service = new LadderService(_repository.Object);
 
-            Assert.Null(service.GetEntryForUser(myLadderId, myPlatform, myUsername));
+            service
+                .GetEntryForUser(myLadderId, myPlatform, myUsername)
+                .Should()
+                .BeNull();
 
         }
 
@@ -70,11 +78,33 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
             var service = new LadderService(_repository.Object);
             var result = service.GetEntryForUser(myLadderId, myPlatform, myUsername);
 
-            Assert.Equal(myEntry, result);
+            result
+                .Should()
+                .BeEquivalentTo(myEntry);
         }
 
-        [Fact(Skip = "TODO")]
-        public void GetEntryForUser_LogsErrorAndThrowsWhenRepositoryThrows() { }
+        [Fact]
+        public void GetEntryForUser_LogsErrorAndThrowsWhenRepositoryThrows()
+        {
+            var myLadderId = "My Ladder Id";
+            var myPlatform = "PC";
+            var myUsername = "My Username";
+
+            var exceptionMessage = "An error occurred because blablabalabla";
+            _repository
+                .Setup(r => r.GetEntryForUser(myLadderId, myPlatform, myUsername))
+                .Throws(new Exception(exceptionMessage));
+
+            var service = new LadderService(_repository.Object);
+
+            service
+                .Invoking(s => s.GetEntryForUser(myLadderId, myPlatform, myUsername))
+                .Should().Throw<Exception>()
+                .WithMessage(exceptionMessage);
+
+            //TODO Check if it logs
+
+        }
 
 
         [Theory]
@@ -85,27 +115,95 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
 
             var service = new LadderService(_repository.Object);
 
-            var result = service.GetTopEntries(ladderId);
-
-            Assert.NotNull(result);
-            Assert.Empty(result);
+            service
+                .GetTopEntries(ladderId)
+                .Should()
+                .NotBeNull()
+                .And.BeEmpty();
         }
 
-        [Fact(Skip = "TODO")]
-        public void GetTopEntries_ReturnsEmptyListIfLadderIdIsOkButServerHasNoEntryForThatLadder() { }
+        [Fact]
+        public void GetTopEntries_ReturnsEmptyListIfLadderIdIsOkButServerHasNoEntryForThatLadder()
+        {
+            var myLadderId = "My Ladder Id";
 
-        [Fact(Skip = "TODO")]
-        public void GetTopEntries_ReturnTopEntriesOfGivenLadder() { }
+            _repository
+                .Setup(r => r.GetTopEntries(myLadderId))
+                .Returns(new List<LadderEntry>());
 
-        [Fact(Skip = "TODO")]
-        public void GetTopEntries_LogsErrorAndThrowsWhenRepositoryThrows() { }
+            var service = new LadderService(_repository.Object);
+
+            var result = service.GetTopEntries(myLadderId);
+
+            result
+                .Should()
+                .BeEmpty();
+        }
+
+        [Fact]
+        public void GetTopEntries_ReturnTopEntriesOfGivenLadder()
+        {
+            var myLadderId = "My Ladder Id";
+            var myEntry = new LadderEntry
+            {
+                LadderId = myLadderId,
+                Platform = "PC",
+                Score = 123,
+                Username = "My Username"
+            };
+            var myLadderList = new List<LadderEntry>
+            {
+                new LadderEntry(),
+                new LadderEntry(),
+                new LadderEntry(),
+                new LadderEntry(),
+            };
+            myLadderList.Add(myEntry);
+
+            _repository
+                .Setup(r => r.GetTopEntries(myLadderId))
+                .Returns(myLadderList);
+
+            var service = new LadderService(_repository.Object);
+
+            var result = service.GetTopEntries(myLadderId);
+
+            result
+                .Should()
+                .NotBeEmpty()
+                .And.HaveCount(5)
+                .And.ContainEquivalentOf(myEntry);
+        }
+
+        [Fact]
+        public void GetTopEntries_LogsErrorAndThrowsWhenRepositoryThrows()
+        {
+            var myLadderId = "My Ladder Id";
+
+            var exceptionMessage = "An error occurred because blablabalabla";
+            _repository
+                .Setup(r => r.GetTopEntries(myLadderId))
+                .Throws(new Exception(exceptionMessage));
+
+            var service = new LadderService(_repository.Object);
+
+            service
+                .Invoking(s => s.GetTopEntries(myLadderId))
+                .Should().Throw<Exception>()
+                .WithMessage(exceptionMessage);
+
+            //TODO Check if it logs
+        }
 
         [Fact]
         public void Upsert_ReturnsNullWhenNullIsPassed()
         {
             var service = new LadderService(_repository.Object);
 
-            Assert.Null(service.Upsert(null));
+            service
+                .Upsert(null)
+                .Should()
+                .BeNull();
         }
 
         [Fact]
@@ -124,12 +222,36 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
 
             var service = new LadderService(_repository.Object);
 
-            Assert.Equal(entry, service.Upsert(entry));
+            service
+                .Upsert(entry)
+                .Should()
+                .BeEquivalentTo(entry);
         }
 
-        [Fact(Skip = "TODO")]
-        public void Upsert_LogsErrorAndThrowsWhenRepositoryThrows() { }
+        [Fact]
+        public void Upsert_LogsErrorAndThrowsWhenRepositoryThrows()
+        {
+            var entry = new LadderEntry
+            {
+                LadderId = "My Ladder",
+                Platform = "PC",
+                Username = "My Username"
+            };
 
 
+            var exceptionMessage = "An error occurred because blablabalabla";
+            _repository
+                .Setup(r => r.Upsert(entry))
+                .Throws(new Exception(exceptionMessage));
+
+            var service = new LadderService(_repository.Object);
+
+            service
+                .Invoking(s => s.Upsert(entry))
+                .Should().Throw<Exception>()
+                .WithMessage(exceptionMessage);
+
+            //TODO Check if it logs
+        }
     }
 }
