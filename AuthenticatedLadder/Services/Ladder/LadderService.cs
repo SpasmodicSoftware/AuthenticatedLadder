@@ -1,4 +1,5 @@
 ﻿using AuthenticatedLadder.DomainModels;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -7,9 +8,11 @@ namespace AuthenticatedLadder.Services.Ladder
     public class LadderService : ILadderService
     {
         private ILadderRepository _repository;
-        public LadderService(ILadderRepository repository)
+        private ILogger _logger;
+
+        public LadderService(ILadderRepository repository, ILogger<LadderService> logger)
         {
-            //TODO Injectare logger
+            _logger = logger;
             _repository = repository;
         }
 
@@ -29,9 +32,9 @@ namespace AuthenticatedLadder.Services.Ladder
                 {
                     result = _repository.GetEntryForUser(ladderId, platform, username);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    //TODO log
+                    _logger.LogError("GetEntryForUser failed to read from repository: {0}", e);
                     throw;
                 }
             }
@@ -48,9 +51,9 @@ namespace AuthenticatedLadder.Services.Ladder
                 {
                     result = _repository.GetTopEntries(ladderId);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    //TODO log error
+                    _logger.LogError("GetTopEntries failed to read from repository: {0}", e);
                     throw;
                 }
             }
@@ -66,9 +69,9 @@ namespace AuthenticatedLadder.Services.Ladder
                 {
                     result = _repository.Upsert(entry);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    //TODO logme
+                    _logger.LogError("Upsert failed to read from repository: {0}", e);
                     throw;
                 }
             }

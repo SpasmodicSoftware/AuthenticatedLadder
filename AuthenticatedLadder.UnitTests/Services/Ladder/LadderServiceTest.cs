@@ -1,6 +1,7 @@
 ﻿using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Services.Ladder;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
     public class LadderServiceTest
     {
         private Mock<ILadderRepository> _repository;
+        private Mock<ILogger<LadderService>> _logger;
 
         public static IEnumerable<object[]> GetEntryForUserTestData => new List<object[]>
         {
@@ -25,6 +27,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         public LadderServiceTest()
         {
             _repository = new Mock<ILadderRepository>();
+            _logger = new Mock<ILogger<LadderService>>();
         }
 
         [Theory]
@@ -32,7 +35,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         public void GetEntryForUser_ReturnsNullWhenInputIsNotValid(string ladderId, string platform, string username)
         {
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             service
                 .GetEntryForUser(ladderId, platform, username)
@@ -50,7 +53,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Setup(r => r.GetEntryForUser(myLadderId, myPlatform, myUsername))
                 .Returns<LadderEntry>(null);
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             service
                 .GetEntryForUser(myLadderId, myPlatform, myUsername)
@@ -75,7 +78,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Setup(r => r.GetEntryForUser(myLadderId, myPlatform, myUsername))
                 .Returns(() => myEntry);
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
             var result = service.GetEntryForUser(myLadderId, myPlatform, myUsername);
 
             result
@@ -95,7 +98,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Setup(r => r.GetEntryForUser(myLadderId, myPlatform, myUsername))
                 .Throws(new Exception(exceptionMessage));
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             service
                 .Invoking(s => s.GetEntryForUser(myLadderId, myPlatform, myUsername))
@@ -113,7 +116,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         public void GetTopEntries_ReturnsEmptyListIfLadderIdIsNullOrEmpty(string ladderId)
         {
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             service
                 .GetTopEntries(ladderId)
@@ -131,7 +134,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Setup(r => r.GetTopEntries(myLadderId))
                 .Returns(new List<LadderEntry>());
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             var result = service.GetTopEntries(myLadderId);
 
@@ -164,7 +167,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Setup(r => r.GetTopEntries(myLadderId))
                 .Returns(myLadderList);
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             var result = service.GetTopEntries(myLadderId);
 
@@ -185,7 +188,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Setup(r => r.GetTopEntries(myLadderId))
                 .Throws(new Exception(exceptionMessage));
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             service
                 .Invoking(s => s.GetTopEntries(myLadderId))
@@ -198,7 +201,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         [Fact]
         public void Upsert_ReturnsNullWhenNullIsPassed()
         {
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             service
                 .Upsert(null)
@@ -220,7 +223,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Setup(r => r.Upsert(entry))
                 .Returns(() => entry);
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             service
                 .Upsert(entry)
@@ -244,7 +247,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Setup(r => r.Upsert(entry))
                 .Throws(new Exception(exceptionMessage));
 
-            var service = new LadderService(_repository.Object);
+            var service = new LadderService(_repository.Object, _logger.Object);
 
             service
                 .Invoking(s => s.Upsert(entry))

@@ -13,12 +13,10 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
     {
         const string workingSecret = "SuperSecret";
         private Mock<ILogger<JWTService>> _logger;
-        private JWTService _jwtService;
 
         public JWTServiceTest()
         {
             _logger = new Mock<ILogger<JWTService>>();
-            _jwtService = new JWTService(_logger.Object);
         }
 
         [Theory]
@@ -28,7 +26,7 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
         [InlineData(null)]
         public void IfBearerTokenIsGibberishReturnsNull(string gibberishValue)
         {
-            _jwtService
+            new JWTService(_logger.Object)
                 .Decode(workingSecret, gibberishValue)
                 .Should()
                 .BeNull();
@@ -45,7 +43,7 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
 
             var token = JWT.Encode(payload, "a different secret", JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
 
-            _jwtService
+            new JWTService(_logger.Object)
                 .Decode(workingSecret, token)
                 .Should()
                 .BeNull();
@@ -62,7 +60,7 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
 
             var token = JWT.Encode(payload, workingSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
 
-            _jwtService
+            new JWTService(_logger.Object)
                 .Decode(workingSecret, token)
                 .Should()
                 .BeEquivalentTo(payload);
@@ -79,7 +77,7 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
 
             var token = JWT.Encode(payload, workingSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
 
-            _jwtService
+            new JWTService(_logger.Object)
                 .Decode(null, token)
                 .Should()
                 .BeNull();
