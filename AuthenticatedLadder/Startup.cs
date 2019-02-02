@@ -49,7 +49,7 @@ namespace GenericAuthenticatedLadder
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            //app.UseSerilog();
             app.UseErrorHandlingMiddleware();
             app.UseJWTPayloadMiddleware();
             app.UseMvc();

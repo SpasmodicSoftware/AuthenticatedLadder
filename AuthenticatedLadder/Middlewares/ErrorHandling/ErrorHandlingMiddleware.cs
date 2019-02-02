@@ -9,7 +9,6 @@ namespace AuthenticatedLadder.Middlewares.ErrorHandling
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-        //TODO private readonly ILoggerManager _logger;
 
         public ErrorHandlingMiddleware(RequestDelegate next)
         {

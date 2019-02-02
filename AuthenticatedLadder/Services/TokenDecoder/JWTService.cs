@@ -1,11 +1,18 @@
 ﻿using System;
 using Jose;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 namespace AuthenticatedLadder.Services.TokenDecoder
 {
     public class JWTService : ITokenDecoderService
     {
+        private ILogger _logger;
+
+        public JWTService(ILogger<JWTService> logger)
+        {
+            _logger = logger;
+        }
 
         public JObject Decode(string secret, string token)
         {
@@ -18,15 +25,15 @@ namespace AuthenticatedLadder.Services.TokenDecoder
                 }
                 catch (IntegrityException)
                 {
-                    //TODO LOG error, invalid keyword
+                    _logger.LogWarning("Integrity exception on passed token. Token is invalid");
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    //TODO log error invalid token
+                    _logger.LogWarning("ArgumentOutOfRange exception on passed token. Token is invalid");
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    //TODO log the fact that someone is trying to pass us some random crap
+                    _logger.LogWarning("IndexOutOfRange exception on passed token. Token is invalid");
                 }
             }
 

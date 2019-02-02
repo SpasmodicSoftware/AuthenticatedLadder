@@ -1,6 +1,8 @@
 ﻿using AuthenticatedLadder.Services.TokenDecoder;
 using FluentAssertions;
 using Jose;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using Xunit;
@@ -10,11 +12,13 @@ namespace AuthenticatedLadder.UnitTests.Services.TokenDecoder
     public class JWTServiceTest
     {
         const string workingSecret = "SuperSecret";
+        private Mock<ILogger<JWTService>> _logger;
         private JWTService _jwtService;
 
         public JWTServiceTest()
         {
-            _jwtService = new JWTService();
+            _logger = new Mock<ILogger<JWTService>>();
+            _jwtService = new JWTService(_logger.Object);
         }
 
         [Theory]
