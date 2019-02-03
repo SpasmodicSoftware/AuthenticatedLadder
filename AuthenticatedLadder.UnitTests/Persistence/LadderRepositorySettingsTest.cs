@@ -6,23 +6,18 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 {
     public class LadderRepositorySettingsTest
     {
-        [Fact]
-        public void ASettingsIsValidWhenLengthIsMoreThanZero()
+        [Theory]
+        [InlineData(0, false)]
+        [InlineData(25, true)]
+        public void ASettingsIsValidWhenLengthIsMoreThanZero(int length, bool expected)
         {
             var settings = new LadderRepositorySettings();
 
-            settings.Length = 0;
+            settings.Length = length;
             settings
                 .IsValidConfiguration()
                 .Should()
-                .BeFalse();
-
-            settings.Length = 25;
-            settings
-                .IsValidConfiguration()
-                .Should()
-                .BeTrue();
-
+                .Be(expected);
         }
     }
 }
