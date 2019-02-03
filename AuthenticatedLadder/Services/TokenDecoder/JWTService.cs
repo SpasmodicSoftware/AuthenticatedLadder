@@ -1,15 +1,16 @@
-﻿using System;
+﻿using AuthenticatedLadder.Logging;
 using Jose;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace AuthenticatedLadder.Services.TokenDecoder
 {
     public class JWTService : ITokenDecoderService
     {
-        private ILogger _logger;
+        private ILoggerAdapter<JWTService> _logger;
 
-        public JWTService(ILogger<JWTService> logger)
+        public JWTService(ILoggerAdapter<JWTService> logger)
         {
             _logger = logger;
         }

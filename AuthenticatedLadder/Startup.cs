@@ -11,6 +11,7 @@ using AuthenticatedLadder.Middlewares;
 using AuthenticatedLadder.Persistence;
 using AuthenticatedLadder.Services.TokenDecoder;
 using AuthenticatedLadder.Middlewares.ErrorHandling;
+using AuthenticatedLadder.Logging;
 
 namespace GenericAuthenticatedLadder
 {
@@ -28,7 +29,10 @@ namespace GenericAuthenticatedLadder
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
+
             services.AddTransient<ITokenDecoderService, JWTService>();
+
 
             services.AddOptions<JWTPayloadMiddlewareSettings>()
                 .Configure(o =>

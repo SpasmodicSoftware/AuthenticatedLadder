@@ -1,7 +1,7 @@
 ﻿using AuthenticatedLadder.DomainModels;
+using AuthenticatedLadder.Logging;
 using AuthenticatedLadder.Services.Ladder;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
     public class LadderServiceTest
     {
         private Mock<ILadderRepository> _repository;
-        private Mock<ILogger<LadderService>> _logger;
+        private Mock<ILoggerAdapter<LadderService>> _logger;
 
         public static IEnumerable<object[]> GetEntryForUserTestData => new List<object[]>
         {
@@ -27,7 +27,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         public LadderServiceTest()
         {
             _repository = new Mock<ILadderRepository>();
-            _logger = new Mock<ILogger<LadderService>>();
+            _logger = new Mock<ILoggerAdapter<LadderService>>();
         }
 
         [Theory]
@@ -105,7 +105,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Should().Throw<Exception>()
                 .WithMessage(exceptionMessage);
 
-            //TODO Check if it logs
+            _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()));
 
         }
 
@@ -195,7 +195,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Should().Throw<Exception>()
                 .WithMessage(exceptionMessage);
 
-            //TODO Check if it logs
+            _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()));
         }
 
         [Fact]
@@ -254,7 +254,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Should().Throw<Exception>()
                 .WithMessage(exceptionMessage);
 
-            //TODO Check if it logs
+            _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()));
         }
     }
 }
