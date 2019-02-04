@@ -17,7 +17,7 @@ namespace AuthenticatedLadder.Services.Ladder
             _repository = repository;
         }
 
-        private bool isValidGetEntryForUserInput(string ladderId, string platform, string username)
+        private bool IsValidGetEntryForUserInput(string ladderId, string platform, string username)
         {
             return !string.IsNullOrEmpty(ladderId)
                 && !string.IsNullOrEmpty(platform)
@@ -27,7 +27,7 @@ namespace AuthenticatedLadder.Services.Ladder
         public LadderEntry GetEntryForUser(string ladderId, string platform, string username)
         {
             LadderEntry result = null;
-            if (isValidGetEntryForUserInput(ladderId, platform, username))
+            if (IsValidGetEntryForUserInput(ladderId, platform, username))
             {
                 try
                 {

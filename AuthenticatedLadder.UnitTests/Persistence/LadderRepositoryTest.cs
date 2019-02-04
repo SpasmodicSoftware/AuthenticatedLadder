@@ -1,8 +1,10 @@
 ﻿using AuthenticatedLadder.DomainModels;
+using AuthenticatedLadder.Logging;
 using AuthenticatedLadder.Persistence;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -12,6 +14,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
     public class LadderRepositoryTest
     {
         private readonly LadderDBContext _dbContext;
+        private readonly Mock<ILoggerAdapter<LadderRepository>> _logger;
 
         private ILadderRepository CreateInMemoryRepository(int ladderLength)
         {
@@ -20,7 +23,8 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                     new LadderRepositorySettings
                     {
                         Length = ladderLength
-                    }));
+                    }),
+                _logger.Object);
         }
 
         public LadderRepositoryTest()
@@ -32,6 +36,8 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             dbContext.Database.OpenConnection();
             dbContext.Database.EnsureCreated();
             _dbContext = dbContext;
+
+            _logger = new Mock<ILoggerAdapter<LadderRepository>>();
         }
 
         [Fact]
@@ -83,6 +89,8 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 .Should()
                 .HaveCount(1)
                 .And.ContainEquivalentOf(anotherPlatformPlayer);
+
+            _logger.Verify(l => l.LogInformation(It.IsAny<string>()), Times.Once());
         }
 
         [Fact]
@@ -134,6 +142,8 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 .HaveCount(2)
                 .And.HaveElementAt(0, anotherPlatformPlayer)
                 .And.HaveElementAt(1, firstPlayer);
+
+            _logger.Verify(l => l.LogInformation(It.IsAny<string>()), Times.Once());
         }
 
         [Fact]
@@ -160,6 +170,8 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 .Should()
                 .HaveCount(1)
                 .And.ContainEquivalentOf(secondPlayer);
+
+            _logger.Verify(l => l.LogInformation(It.IsAny<string>()), Times.Once());
         }
 
         [Fact]
@@ -214,6 +226,8 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 .HaveCount(2)
                 .And.HaveElementAt(0, anotherPlatformPlayer)
                 .And.HaveElementAt(1, firstPlayer);
+
+            _logger.Verify(l => l.LogInformation(It.IsAny<string>()), Times.Once());
         }
         [Fact]
         public void Upsert_SuccessfullyInsertNewEntriesRegardingTheTopPlayerLadderSize()
@@ -324,6 +338,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             result
                 .Should()
                 .BeEquivalentTo(thirdEntryBetterScore);
+
         }
 
         [Fact]
@@ -394,7 +409,6 @@ namespace AuthenticatedLadder.UnitTests.Persistence
 
         }
 
-        //LadderEntry GetEntryForUser(string ladderId, string platform, string username);
         [Fact]
         public void GetEntryForUser_ReturnsNullIfUserNotPresent()
         {

@@ -1,6 +1,8 @@
-﻿using AuthenticatedLadder.Middlewares.ErrorHandling;
+﻿using AuthenticatedLadder.Logging;
+using AuthenticatedLadder.Middlewares.ErrorHandling;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Moq;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -12,21 +14,23 @@ namespace AuthenticatedLadder.UnitTests.Middlewares.ErrorHandling
     public class ErrorHandlingMiddlewareTest
     {
         private HttpContext _context;
+        private Mock<ILoggerAdapter<ErrorHandlingMiddleware>> _logger;
 
         public ErrorHandlingMiddlewareTest()
         {
             _context = new DefaultHttpContext();
+            _logger = new Mock<ILoggerAdapter<ErrorHandlingMiddleware>>();
         }
 
         [Fact]
         public async Task InvokeAsync_ShouldCatchExceptionAndReturnStandardErrorWhenDelegateThrows()
         {
-            RequestDelegate next = (innerHttpContext)
+            Task next(HttpContext innerHttpContext)
                 => throw new Exception("This message must not be shown");
 
             _context.Response.Body = new MemoryStream();
 
-            var middleware = new ErrorHandlingMiddleware(next);
+            var middleware = new ErrorHandlingMiddleware(next, _logger.Object);
 
             await middleware.InvokeAsync(_context);
 
@@ -45,6 +49,8 @@ namespace AuthenticatedLadder.UnitTests.Middlewares.ErrorHandling
             result
                 .Should()
                 .BeEquivalentTo(expected);
+
+            _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once());
         }
     }
 }

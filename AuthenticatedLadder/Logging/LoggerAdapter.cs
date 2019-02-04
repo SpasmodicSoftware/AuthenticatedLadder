@@ -20,6 +20,16 @@ namespace AuthenticatedLadder.Logging
             _logger.LogError(ex, message, args);
         }
 
+        public void LogInformation(string message)
+        {
+            _logger.LogInformation(message);
+        }
+
+        public void LogInformation(string message, params object[] args)
+        {
+            _logger.LogInformation(message, args);
+        }
+
         public void LogWarning(string message)
         {
             _logger.LogWarning(message);

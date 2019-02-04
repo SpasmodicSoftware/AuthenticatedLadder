@@ -11,9 +11,10 @@ namespace AuthenticatedLadder.UnitTests.Persistence
         [InlineData(25, true)]
         public void ASettingsIsValidWhenLengthIsMoreThanZero(int length, bool expected)
         {
-            var settings = new LadderRepositorySettings();
-
-            settings.Length = length;
+            var settings = new LadderRepositorySettings
+            {
+                Length = length
+            };
             settings
                 .IsValidConfiguration()
                 .Should()

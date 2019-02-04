@@ -7,7 +7,7 @@ namespace GenericAuthenticatedLadder.Controllers
 {
     public class AuthenticatedEchoController : ControllerBase
     {
-        private ITokenDecoderService _decoderService;
+        private readonly ITokenDecoderService _decoderService;
 
         public AuthenticatedEchoController(ITokenDecoderService decoderService)
         {

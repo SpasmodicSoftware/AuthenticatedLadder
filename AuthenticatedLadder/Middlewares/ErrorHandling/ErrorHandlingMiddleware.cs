@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AuthenticatedLadder.Logging;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Net;
@@ -9,10 +10,12 @@ namespace AuthenticatedLadder.Middlewares.ErrorHandling
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILoggerAdapter<ErrorHandlingMiddleware> _logger;
 
-        public ErrorHandlingMiddleware(RequestDelegate next)
+        public ErrorHandlingMiddleware(RequestDelegate next, ILoggerAdapter<ErrorHandlingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext httpContext)
@@ -21,9 +24,9 @@ namespace AuthenticatedLadder.Middlewares.ErrorHandling
             {
                 await _next(httpContext);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: Loggare eccezione in error!
+                _logger.LogError(e, "Got an error from an underlying middleware. This will be logged and hidden from client");
                 await HandleExceptionAsync(httpContext);
             }
         }
