@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AuthenticatedLadder.DomainModels;
+﻿using AuthenticatedLadder.DomainModels;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace AuthenticatedLadder.Persistence
 {
@@ -19,7 +16,7 @@ namespace AuthenticatedLadder.Persistence
             ChangeTracker.DetectChanges();
             foreach (var entry in ChangeTracker.Entries())
             {
-                if(entry.State == EntityState.Added || entry.State == EntityState.Modified)
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
                 {
                     entry.Property("EntryDate").CurrentValue = DateTime.UtcNow;
                 }

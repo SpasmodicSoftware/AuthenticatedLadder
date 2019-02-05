@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Dynamic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthenticatedLadder.DomainModels
 {

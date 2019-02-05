@@ -1,6 +1,5 @@
-﻿using System;
+﻿using AuthenticatedLadder.DomainModels;
 using System.Collections.Generic;
-using AuthenticatedLadder.DomainModels;
 namespace AuthenticatedLadder.Services.Ladder
 {
     public interface ILadderService

@@ -1,23 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using AuthenticatedLadder.Services.TokenDecoder;
-using Microsoft.AspNetCore.Http;
+﻿using AuthenticatedLadder.Services.JWTPayloadHolder;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GenericAuthenticatedLadder.Controllers
 {
     public class AuthenticatedEchoController : ControllerBase
     {
-        private readonly ITokenDecoderService _decoderService;
+        private IJWTPayloadHolder _payloadHolder;
 
-        public AuthenticatedEchoController(ITokenDecoderService decoderService)
+        public AuthenticatedEchoController(IJWTPayloadHolder payloadHolder)
         {
-            _decoderService = decoderService;
+            _payloadHolder = payloadHolder;
         }
 
         [HttpGet("echo")]
         public IActionResult DoAuthenticatedEcho()
         {
-            return new JsonResult(Request.HttpContext.Items["JWTSignedPayload"]);
+            //return new JsonResult(Request.HttpContext.Items["JWTSignedPayload"]);
+            return new JsonResult(_payloadHolder.GetPayload("JWTSignedPayload"));
         }
 
     }

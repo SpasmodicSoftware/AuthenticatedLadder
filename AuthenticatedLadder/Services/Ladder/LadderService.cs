@@ -1,6 +1,5 @@
 ﻿using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Logging;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 

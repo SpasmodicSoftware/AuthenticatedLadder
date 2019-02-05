@@ -1,4 +1,4 @@
-﻿using AuthenticatedLadder.Middlewares;
+﻿using AuthenticatedLadder.Middlewares.JWTPayload;
 using Microsoft.AspNetCore.Builder;
 
 namespace AuthenticatedLadder.ExtensionMethods

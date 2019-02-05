@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
+﻿using AuthenticatedLadder.Services.JWTPayloadHolder;
 using AuthenticatedLadder.Services.TokenDecoder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
-namespace AuthenticatedLadder.Middlewares
+namespace AuthenticatedLadder.Middlewares.JWTPayload
 {
     public class JWTPayloadMiddleware
     {
@@ -18,12 +19,13 @@ namespace AuthenticatedLadder.Middlewares
             _settings = settings.Value;
         }
 
-        public async Task Invoke(HttpContext context, ITokenDecoderService decoder)
+        public async Task InvokeAsync(HttpContext context, ITokenDecoderService decoder, IJWTPayloadHolder payloadHolder)
         {
             var payload = _decoder.Decode(_settings.DecodeSecret, GetBearerToken(context.Request));
             if (payload != null)
             {
-                context.Items["JWTSignedPayload"] = payload;
+                //context.Items["JWTSignedPayload"] = payload;
+                payloadHolder.HoldPayload("JWTSignedPayload", payload);
 
                 await _next(context);
             }

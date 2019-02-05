@@ -1,6 +1,5 @@
 ﻿using AuthenticatedLadder.Logging;
 using Jose;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
 

@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AuthenticatedLadder.ExtensionMethods;
+using AuthenticatedLadder.Logging;
+using AuthenticatedLadder.Middlewares.JWTPayload;
+using AuthenticatedLadder.Persistence;
+using AuthenticatedLadder.Services.JWTPayloadHolder;
+using AuthenticatedLadder.Services.TokenDecoder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using AuthenticatedLadder.ExtensionMethods;
-using AuthenticatedLadder.Middlewares;
-using AuthenticatedLadder.Persistence;
-using AuthenticatedLadder.Services.TokenDecoder;
-using AuthenticatedLadder.Middlewares.ErrorHandling;
-using AuthenticatedLadder.Logging;
 
 namespace GenericAuthenticatedLadder
 {
@@ -29,6 +26,8 @@ namespace GenericAuthenticatedLadder
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddScoped<IJWTPayloadHolder, JWTPayloadHolder>();
+
             services.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
 
             services.AddTransient<ITokenDecoderService, JWTService>();
@@ -40,7 +39,7 @@ namespace GenericAuthenticatedLadder
                     o.HeaderName = Configuration["JWT:HeaderName"];
                     o.DecodeSecret = Configuration["JWT:DecodeSecret"];
                 })
-                .Validate(o => o.isValidConfiguration(), "JWTPayloadMiddlewareSettings not properly set");
+                .Validate(o => o.IsValidConfiguration(), "JWTPayloadMiddlewareSettings not properly set");
             services.AddOptions<LadderRepositorySettings>()
                 .Configure(o => { o.Length = int.Parse(Configuration["LadderRepositorySettings:Length"]); })
                 .Validate(o => o.IsValidConfiguration(), "LadderRepositorySettings not properly set");
