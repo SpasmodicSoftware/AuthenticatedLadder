@@ -29,9 +29,7 @@ namespace GenericAuthenticatedLadder
             services.AddScoped<IJWTPayloadHolder, JWTPayloadHolder>();
 
             services.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
-
             services.AddTransient<ITokenDecoderService, JWTService>();
-
 
             services.AddOptions<JWTPayloadMiddlewareSettings>()
                 .Configure(o =>

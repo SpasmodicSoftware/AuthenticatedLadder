@@ -24,7 +24,6 @@ namespace AuthenticatedLadder.Middlewares.JWTPayload
             var payload = _decoder.Decode(_settings.DecodeSecret, GetBearerToken(context.Request));
             if (payload != null)
             {
-                //context.Items["JWTSignedPayload"] = payload;
                 payloadHolder.HoldPayload("JWTSignedPayload", payload);
 
                 await _next(context);
@@ -33,8 +32,6 @@ namespace AuthenticatedLadder.Middlewares.JWTPayload
             {
                 context.Response.StatusCode = 401;
             }
-
-
         }
 
         private string GetBearerToken(HttpRequest request)

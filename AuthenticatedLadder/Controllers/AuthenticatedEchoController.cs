@@ -15,7 +15,6 @@ namespace GenericAuthenticatedLadder.Controllers
         [HttpGet("echo")]
         public IActionResult DoAuthenticatedEcho()
         {
-            //return new JsonResult(Request.HttpContext.Items["JWTSignedPayload"]);
             return new JsonResult(_payloadHolder.GetPayload("JWTSignedPayload"));
         }
 
