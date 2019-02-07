@@ -1,4 +1,5 @@
-﻿using AuthenticatedLadder.Persistence;
+﻿using AuthenticatedLadder.Logging;
+using AuthenticatedLadder.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -26,8 +27,8 @@ namespace AuthenticatedLadder.IntegrationTests.CustomWebApplicationFactories
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<LadderDBContext>();
-                    //var logger = scopedServices
-                    //    .GetRequiredService<ILoggerAdapter<LadderCustomWebApplicationFactory<TStartup>>>();
+                    var logger = scopedServices
+                        .GetRequiredService<ILoggerAdapter<TStartup>>();
 
                     // Ensure the database is created.
                     db.Database.EnsureCreated();

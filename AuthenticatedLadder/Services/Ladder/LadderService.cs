@@ -35,7 +35,7 @@ namespace AuthenticatedLadder.Services.Ladder
                 catch (Exception e)
                 {
                     _logger.LogError(e, "GetEntryForUser failed to read from repository");
-                    throw;
+                    throw e;
                 }
             }
             return result;
