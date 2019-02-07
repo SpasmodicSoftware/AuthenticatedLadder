@@ -1,4 +1,5 @@
-﻿using GenericAuthenticatedLadder;
+﻿using AuthenticatedLadder.IntegrationTests.CustomWebApplicationFactories;
+using GenericAuthenticatedLadder;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,20 @@ using Xunit;
 
 namespace AuthenticatedLadder.IntegrationTests.Controllers
 {
-    public class LadderControllerTest : IClassFixture<WebApplicationFactory<Startup>>
+    public class LadderControllerTest : IClassFixture<LadderCustomWebApplicationFactory<Startup>>
     {
-        private readonly WebApplicationFactory<Startup> _factory;
+        private readonly LadderCustomWebApplicationFactory<Startup> _factory;
 
-        public LadderControllerTest(WebApplicationFactory<Startup> factory)
+        public LadderControllerTest(LadderCustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
+        }
+
+        [Fact(Skip = "TODO")]
+        public void Test()
+        {
+            _factory.CreateClient();
+            throw new NotImplementedException();
         }
     }
 }

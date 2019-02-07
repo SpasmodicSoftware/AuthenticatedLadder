@@ -105,7 +105,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Should().Throw<Exception>()
                 .WithMessage(exceptionMessage);
 
-            _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once());
+            _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once(), "Logger not called");
 
         }
 

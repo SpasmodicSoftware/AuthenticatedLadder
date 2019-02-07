@@ -6,9 +6,11 @@ namespace AuthenticatedLadder.Persistence
 {
     public class LadderDBContext : DbContext
     {
+        private readonly DbContextOptions<LadderDBContext> _options;
+
         public LadderDBContext(DbContextOptions<LadderDBContext> options) : base(options)
         {
-
+            _options = options;
         }
 
         public override int SaveChanges()
