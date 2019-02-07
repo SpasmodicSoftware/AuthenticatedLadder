@@ -99,11 +99,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .Throws(new Exception(exceptionMessage));
 
             var service = new LadderService(_repository.Object, _logger.Object);
-
-            service
-                .Invoking(s => s.GetEntryForUser(myLadderId, myPlatform, myUsername))
-                .Should().Throw<Exception>()
-                .WithMessage(exceptionMessage);
+            service.GetEntryForUser(myLadderId, myPlatform, myUsername);
 
             _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once(), "Logger not called");
 
