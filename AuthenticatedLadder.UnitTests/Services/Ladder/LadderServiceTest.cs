@@ -87,7 +87,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         }
 
         [Fact]
-        public void GetEntryForUser_LogsErrorAndThrowsWhenRepositoryThrows()
+        public void GetEntryForUser_LogsErrorWhenRepositoryThrows()
         {
             var myLadderId = "My Ladder Id";
             var myPlatform = "PC";
@@ -175,7 +175,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         }
 
         [Fact]
-        public void GetTopEntries_LogsErrorAndThrowsWhenRepositoryThrows()
+        public void GetTopEntries_LogsErrorWhenRepositoryThrows()
         {
             var myLadderId = "My Ladder Id";
 
@@ -186,10 +186,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
 
             var service = new LadderService(_repository.Object, _logger.Object);
 
-            service
-                .Invoking(s => s.GetTopEntries(myLadderId))
-                .Should().Throw<Exception>()
-                .WithMessage(exceptionMessage);
+            service.GetTopEntries(myLadderId);
 
             _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once());
         }
@@ -228,7 +225,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
         }
 
         [Fact]
-        public void Upsert_LogsErrorAndThrowsWhenRepositoryThrows()
+        public void Upsert_LogsErrorWhenRepositoryThrows()
         {
             var entry = new LadderEntry
             {
@@ -245,10 +242,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
 
             var service = new LadderService(_repository.Object, _logger.Object);
 
-            service
-                .Invoking(s => s.Upsert(entry))
-                .Should().Throw<Exception>()
-                .WithMessage(exceptionMessage);
+            service.Upsert(entry);
 
             _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once());
         }

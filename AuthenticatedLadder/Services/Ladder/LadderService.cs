@@ -53,7 +53,6 @@ namespace AuthenticatedLadder.Services.Ladder
                 catch (Exception e)
                 {
                     _logger.LogError(e, "GetTopEntries failed to read from repository");
-                    throw;
                 }
             }
             return result;
@@ -71,7 +70,6 @@ namespace AuthenticatedLadder.Services.Ladder
                 catch (Exception e)
                 {
                     _logger.LogError(e, "Upsert failed to read from repository");
-                    throw;
                 }
             }
             return result;
