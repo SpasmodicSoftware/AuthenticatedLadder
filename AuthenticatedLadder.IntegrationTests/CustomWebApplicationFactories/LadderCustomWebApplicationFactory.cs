@@ -18,30 +18,17 @@ namespace AuthenticatedLadder.IntegrationTests.CustomWebApplicationFactories
 
                 services.AddDbContext<LadderDBContext>(options => options.UseSqlite("DataSource=:memory:"));
 
-                // Build the service provider.
                 var sp = services.BuildServiceProvider();
 
-                // Create a scope to obtain a reference to the database
-                // context (ApplicationDbContext).
                 using (var scope = sp.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<LadderDBContext>();
-                    var logger = scopedServices
-                        .GetRequiredService<ILoggerAdapter<TStartup>>();
 
                     // Ensure the database is created.
                     db.Database.EnsureCreated();
+                    Utilities.PrepareDatabaseForTest(db);
 
-                    try
-                    {
-                        Utilities.PrepareDatabaseForTest(db);
-                    }
-                    catch (Exception)
-                    {
-                        //logger.LogError(ex, $"An error occurred seeding the " +
-                        //"database with test messages. Error: {ex.Message}");
-                    }
                 }
             });
         }

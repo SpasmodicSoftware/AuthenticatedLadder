@@ -18,7 +18,7 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             _factory = factory;
         }
 
-        [Fact(Skip ="TODO")]
+        [Fact(Skip = "TODO")]
         public void Test()
         {
             _factory.CreateClient();

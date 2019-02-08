@@ -7,6 +7,7 @@ using AuthenticatedLadder.Services.TokenDecoder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,6 +42,10 @@ namespace GenericAuthenticatedLadder
             services.AddOptions<LadderRepositorySettings>()
                 .Configure(o => { o.Length = int.Parse(Configuration["LadderRepositorySettings:Length"]); })
                 .Validate(o => o.IsValidConfiguration(), "LadderRepositorySettings not properly set");
+
+            //TODO Legegre da config
+            var connStr = "";
+            services.AddDbContext<LadderDBContext>(opt => opt.UseSqlite(connStr));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +55,7 @@ namespace GenericAuthenticatedLadder
             {
                 app.UseDeveloperExceptionPage();
             }
-            //app.UseSerilog();
+
             app.UseErrorHandlingMiddleware();
             app.UseJWTPayloadMiddleware();
             app.UseMvc();
