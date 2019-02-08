@@ -16,6 +16,16 @@ namespace AuthenticatedLadder.IntegrationTests.CustomWebApplicationFactories
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.ConfigureAppConfiguration(configBuilder =>
+            {
+                var configs = new Dictionary<string, string>
+                {
+                    {"JWT:HeaderName", "TestHeader" },
+                    //{ },
+                    //{ }
+                };
+                configBuilder.AddInMemoryCollection(configs);
+            });
             builder.ConfigureServices(services =>
             {
                 services.AddDbContext<LadderDBContext>(options => options.UseSqlite("DataSource=:memory:"));
