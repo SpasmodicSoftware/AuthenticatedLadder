@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
+using AuthenticatedLadder.Middlewares.JWTPayload;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace AuthenticatedLadder.IntegrationTests.CustomWebApplicationFactories
 {
@@ -12,23 +16,18 @@ namespace AuthenticatedLadder.IntegrationTests.CustomWebApplicationFactories
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-
             builder.ConfigureServices(services =>
             {
-
                 services.AddDbContext<LadderDBContext>(options => options.UseSqlite("DataSource=:memory:"));
 
                 var sp = services.BuildServiceProvider();
-
                 using (var scope = sp.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<LadderDBContext>();
 
-                    // Ensure the database is created.
                     db.Database.EnsureCreated();
                     Utilities.PrepareDatabaseForTest(db);
-
                 }
             });
         }

@@ -36,6 +36,7 @@ namespace GenericAuthenticatedLadder
                 .Configure(o =>
                 {
                     o.HeaderName = Configuration["JWT:HeaderName"];
+                    //TODO questo deve diventare env.DECODE_SECRET per docker
                     o.DecodeSecret = Configuration["JWT:DecodeSecret"];
                 })
                 .Validate(o => o.IsValidConfiguration(), "JWTPayloadMiddlewareSettings not properly set");
@@ -44,7 +45,7 @@ namespace GenericAuthenticatedLadder
                 .Validate(o => o.IsValidConfiguration(), "LadderRepositorySettings not properly set");
 
             //TODO Legegre da config
-            var connStr = "";
+            var connStr = "DataSource=file.db";
             services.AddDbContext<LadderDBContext>(opt => opt.UseSqlite(connStr));
         }
 
