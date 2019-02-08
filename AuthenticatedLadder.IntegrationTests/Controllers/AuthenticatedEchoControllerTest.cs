@@ -1,4 +1,5 @@
-﻿using GenericAuthenticatedLadder;
+﻿using FluentAssertions;
+using GenericAuthenticatedLadder;
 using Jose;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -77,7 +78,9 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             var responsePayload = JsonConvert.DeserializeObject<JObject>(
                 await response.Content.ReadAsStringAsync());
 
-            Assert.True(JObject.DeepEquals(payload, responsePayload));
+            responsePayload
+                .Should()
+                .BeEquivalentTo(payload);
 
         }
 

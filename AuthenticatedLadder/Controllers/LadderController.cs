@@ -1,7 +1,9 @@
 ﻿using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Logging;
+using AuthenticatedLadder.Services.JWTPayloadHolder;
 using AuthenticatedLadder.Services.Ladder;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace AuthenticatedLadder.Controllers
@@ -11,11 +13,13 @@ namespace AuthenticatedLadder.Controllers
     {
         private ILadderService _ladderService;
         private ILoggerAdapter<LadderController> _logger;
+        private IJWTPayloadHolder _jwtPayload;
 
-        public LadderController(ILadderService ladderService, ILoggerAdapter<LadderController> logger)
+        public LadderController(ILadderService ladderService, ILoggerAdapter<LadderController> logger, IJWTPayloadHolder jwtPayload)
         {
             _ladderService = ladderService;
             _logger = logger;
+            _jwtPayload = jwtPayload;
         }
 
         [Route("{ladderId}"), HttpGet]
@@ -25,8 +29,9 @@ namespace AuthenticatedLadder.Controllers
         }
 
         [HttpPost]
-        public ActionResult InsertOrUpdateEntry([FromBody]LadderEntry entry)
+        public ActionResult InsertOrUpdateEntry()
         {
+            var entry = _jwtPayload.GetPayload("JWTSignedPayload").ToObject<LadderEntry>(); 
             var result = _ladderService.Upsert(entry);
             if (result == null)
             {

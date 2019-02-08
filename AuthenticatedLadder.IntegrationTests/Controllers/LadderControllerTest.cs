@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Xunit;
+using AuthenticatedLadder.DomainModels;
 
 namespace AuthenticatedLadder.IntegrationTests.Controllers
 {
@@ -24,6 +25,11 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
         public LadderControllerTest(LadderCustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
+        }
+
+        private string PrepareJWTPayload(LadderEntry entry)
+        {
+            return "";
         }
 
         [Fact]
