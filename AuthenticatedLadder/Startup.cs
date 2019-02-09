@@ -49,9 +49,9 @@ namespace GenericAuthenticatedLadder
                 .Configure(o => { o.Length = int.Parse(Configuration["LadderRepositorySettings:Length"]); })
                 .Validate(o => o.IsValidConfiguration(), "LadderRepositorySettings not properly set");
 
-            ////TODO Legegre da config
-            //var connStr = "DataSource=file.db";
-            //services.AddDbContext<LadderDBContext>(opt => opt.UseSqlite(connStr));
+            //TODO Legegre da config
+            var connStr = "DataSource=file.db";
+            services.AddDbContext<LadderDBContext>(opt => opt.UseSqlite(connStr));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
