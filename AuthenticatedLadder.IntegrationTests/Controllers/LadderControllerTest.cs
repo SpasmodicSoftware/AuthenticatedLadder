@@ -3,6 +3,7 @@ using AuthenticatedLadder.IntegrationTests.CustomWebApplicationFactories;
 using FluentAssertions;
 using GenericAuthenticatedLadder;
 using Jose;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -33,7 +34,6 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
 
             var response = await client.GetAsync("/ladder/myLadder");
 
-            response.IsSuccessStatusCode.Should().BeFalse();
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
@@ -59,9 +59,44 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             var client = _factory.CreateClient();
             var response = await client.PostAsync("/ladder", new StringContent("{}", Encoding.UTF8, "application/json"));
 
-            response.IsSuccessStatusCode.Should().BeFalse();
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
+
+        [Fact]
+        public async Task InsertOrUpdateEntry_ReturnsBadRequestIfJWTPayloadIsNotAValidEntry()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload("{}"));
+
+            var response = await client.PostAsync("/ladder", new StringContent("{}", Encoding.UTF8, "application/json"));
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task InsertOrUpdateEntry_ReturnsOkAndGivenEntryIfJWTPayloadIsAValidEntry()
+        {
+            var entry = new LadderEntry
+            {
+                LadderId = "My Ladder Id",
+                Platform = "MyCoolPlatform",
+                Username = "Ciccio42",
+                Score = 12000,
+                Position = 1
+            };
+
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload(JsonConvert.SerializeObject(entry)));
+
+            var response = await client.PostAsync("/ladder", new StringContent("{}", Encoding.UTF8, "application/json"));
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var result = JsonConvert.DeserializeObject<LadderEntry>(await response.Content.ReadAsStringAsync());
+
+            result.Should().BeEquivalentTo(entry);
+        }
+
 
         [Fact]
         public async Task GetPlayerPosition_ReturnsUnauthorizedIfNotValidJWTPayload()
@@ -69,7 +104,6 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             var client = _factory.CreateClient();
             var response = await client.GetAsync("/ladder/myLadder/PC/myPlayer");
 
-            response.IsSuccessStatusCode.Should().BeFalse();
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
     }
