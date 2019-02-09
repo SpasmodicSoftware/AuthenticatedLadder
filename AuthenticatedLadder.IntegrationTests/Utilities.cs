@@ -1,6 +1,5 @@
 ﻿using AuthenticatedLadder.DomainModels;
 using AuthenticatedLadder.Persistence;
-using System;
 using System.Collections.Generic;
 
 namespace AuthenticatedLadder.IntegrationTests
@@ -9,7 +8,15 @@ namespace AuthenticatedLadder.IntegrationTests
     {
         public static void PrepareDatabaseForTest(LadderDBContext db)
         {
-            db.Ladders.AddRange();
+            db.Ladders.Add(new LadderEntry()
+            {
+                LadderId = "A Ldder",
+                Platform = "Nintendo360",
+                Username = "Antani",
+                Score = 666
+            });
+            db.SaveChanges();
+
         }
 
         private static readonly List<LadderEntry> __;

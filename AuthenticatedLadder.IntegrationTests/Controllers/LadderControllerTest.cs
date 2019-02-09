@@ -1,20 +1,14 @@
-﻿using AuthenticatedLadder.IntegrationTests.CustomWebApplicationFactories;
+﻿using AuthenticatedLadder.DomainModels;
+using AuthenticatedLadder.IntegrationTests.CustomWebApplicationFactories;
+using FluentAssertions;
 using GenericAuthenticatedLadder;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System;
+using Jose;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using AuthenticatedLadder.Middlewares.JWTPayload;
-using FluentAssertions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Xunit;
-using AuthenticatedLadder.DomainModels;
 
 namespace AuthenticatedLadder.IntegrationTests.Controllers
 {
@@ -27,9 +21,9 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             _factory = factory;
         }
 
-        private string PrepareJWTPayload(LadderEntry entry)
+        private string PrepareJWTPayload(string payload)
         {
-            return "";
+            return JWT.Encode(payload, _factory.JWTDecodeSecret, JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
         }
 
         [Fact]
@@ -38,9 +32,25 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             var client = _factory.CreateClient();
 
             var response = await client.GetAsync("/ladder/myLadder");
-            
+
             response.IsSuccessStatusCode.Should().BeFalse();
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task GetTopForLadder_ReturnsEmptyListIfValidJWTPayloadButNoLadderFound()
+        {
+            var client = _factory.CreateClient();
+
+            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload("{}"));
+
+            var response = await client.GetAsync("/ladder/notFoundLadder");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var result = await response.Content.ReadAsAsync<List<LadderEntry>>();
+
+            result.Should().BeEmpty();
         }
 
         [Fact]

@@ -1,8 +1,10 @@
-﻿using AuthenticatedLadder.ExtensionMethods;
+﻿using AuthenticatedLadder.DomainModels;
+using AuthenticatedLadder.ExtensionMethods;
 using AuthenticatedLadder.Logging;
 using AuthenticatedLadder.Middlewares.JWTPayload;
 using AuthenticatedLadder.Persistence;
 using AuthenticatedLadder.Services.JWTPayloadHolder;
+using AuthenticatedLadder.Services.Ladder;
 using AuthenticatedLadder.Services.TokenDecoder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +33,9 @@ namespace GenericAuthenticatedLadder
 
             services.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
             services.AddTransient<ITokenDecoderService, JWTService>();
+            services.AddTransient<ILadderService, LadderService>();
+            services.AddTransient<ILadderRepository, LadderRepository>();
+
 
             services.AddOptions<JWTPayloadMiddlewareSettings>()
                 .Configure(o =>
@@ -44,9 +49,9 @@ namespace GenericAuthenticatedLadder
                 .Configure(o => { o.Length = int.Parse(Configuration["LadderRepositorySettings:Length"]); })
                 .Validate(o => o.IsValidConfiguration(), "LadderRepositorySettings not properly set");
 
-            //TODO Legegre da config
-            var connStr = "DataSource=file.db";
-            services.AddDbContext<LadderDBContext>(opt => opt.UseSqlite(connStr));
+            ////TODO Legegre da config
+            //var connStr = "DataSource=file.db";
+            //services.AddDbContext<LadderDBContext>(opt => opt.UseSqlite(connStr));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
