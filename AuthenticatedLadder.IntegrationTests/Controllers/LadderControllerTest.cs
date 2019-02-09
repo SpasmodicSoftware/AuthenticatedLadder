@@ -106,5 +106,32 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
 
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
+
+        [Fact]
+        public async Task GetPlayerPosition_ReturnsNotFoundIfGivenPlayerDoesNotExistAndJWTPayloadIsSigned()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload("{}"));
+
+            var response = await client.GetAsync("/ladder/myLadder/PC/myPlayer");
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GetPlayerPosition_ReturnsEntryWithValuedPositionIfPlayerExistAndJWTPayloadIsSigned()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload("{}"));
+
+            var response = await client.GetAsync("/ladder/existingLadder/Nintendo360/Ultimo");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var result = JsonConvert.DeserializeObject<LadderEntry>(await response.Content.ReadAsStringAsync());
+
+            result.Position.Should().Be(3);
+        }
+
     }
 }

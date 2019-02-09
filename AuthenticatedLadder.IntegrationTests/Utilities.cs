@@ -8,13 +8,28 @@ namespace AuthenticatedLadder.IntegrationTests
     {
         public static void PrepareDatabaseForTest(LadderDBContext db)
         {
-            db.Ladders.Add(new LadderEntry()
-            {
-                LadderId = "A Ldder",
-                Platform = "Nintendo360",
-                Username = "Antani",
-                Score = 666
-            });
+            db.Ladders.AddRange(
+                new LadderEntry()
+                {
+                    LadderId = "existingLadder",
+                    Platform = "Nintendo360",
+                    Username = "Antani",
+                    Score = 666
+                },
+                new LadderEntry()
+                {
+                    LadderId = "existingLadder",
+                    Platform = "Super Famicom",
+                    Username = "secondo",
+                    Score = 6666
+                },new LadderEntry()
+                {
+                    LadderId = "existingLadder",
+                    Platform = "Nintendo360",
+                    Username = "Ultimo",
+                    Score = 999999
+                }
+            );
             db.SaveChanges();
 
         }
