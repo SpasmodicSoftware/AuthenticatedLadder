@@ -66,7 +66,7 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
         public async Task InsertOrUpdateEntry_ReturnsBadRequestIfJWTPayloadIsNotAValidEntry()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload("{}"));
+            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload("{\"another\":-1}"));
 
             var response = await client.PostAsync("/ladder", new StringContent("{}", Encoding.UTF8, "application/json"));
 
