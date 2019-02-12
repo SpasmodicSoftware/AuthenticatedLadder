@@ -16,7 +16,11 @@ namespace GenericAuthenticatedLadder
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .Enrich.FromLogContext()
-                .WriteTo.DateFormatPath(configuration["Logging:path"])
+                .WriteTo.DateFormatPath(
+                    configuration["Logging:path"],
+                    fileSizeLimitBytes: 1_000_000,
+                    flushToDiskInterval: TimeSpan.FromSeconds(5)
+                )
                 .CreateLogger();
 
             try
