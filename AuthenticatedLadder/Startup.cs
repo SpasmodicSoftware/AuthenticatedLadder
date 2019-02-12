@@ -41,7 +41,6 @@ namespace GenericAuthenticatedLadder
                 .Configure(o =>
                 {
                     o.HeaderName = Configuration["JWT:HeaderName"];
-                    //TODO questo deve diventare env.DECODE_SECRET per docker
                     o.DecodeSecret = Configuration["JWT:DecodeSecret"];
                 })
                 .Validate(o => o.IsValidConfiguration(), "JWTPayloadMiddlewareSettings not properly set");
@@ -49,12 +48,10 @@ namespace GenericAuthenticatedLadder
                 .Configure(o => { o.Length = int.Parse(Configuration["LadderRepositorySettings:Length"]); })
                 .Validate(o => o.IsValidConfiguration(), "LadderRepositorySettings not properly set");
 
-            //TODO Legegre da config
-            var connStr = "DataSource=file.db";
+            var connStr = Configuration["ConnectionString"];
             services.AddDbContext<LadderDBContext>(opt => opt.UseSqlite(connStr));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
