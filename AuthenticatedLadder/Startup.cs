@@ -65,6 +65,7 @@ namespace GenericAuthenticatedLadder
             app.UseErrorHandlingMiddleware();
             app.UseJWTPayloadMiddleware();
             app.UseMvc();
+            app.MigrateDatabase();
         }
     }
 }
