@@ -117,5 +117,41 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
+        [Fact(Skip = "TODO")]
+        public async Task Get_EmptyArrayIsAValidPayload()
+        {
+            var testSecretKey = "TestSecretKey";
+            var client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureAppConfiguration((builderContext, config) =>
+                {
+                    config.AddInMemoryCollection(
+                        new Dictionary<string, string>
+                        {
+                                {"JWT:DecodeSecret", testSecretKey },
+                                {"JWT:HeaderName", _testHeaderName }
+                        });
+                });
+            })
+                .CreateClient();
+
+            var payload = new JArray();
+
+            var token = JWT.Encode(payload, testSecretKey,
+                JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512);
+
+            client.DefaultRequestHeaders.Add("Authorization", token);
+
+            var response = await client.GetAsync("/echo");
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var responsePayload = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+
+            responsePayload
+                .Should()
+                .BeEquivalentTo(payload);
+        }
+
     }
 }
