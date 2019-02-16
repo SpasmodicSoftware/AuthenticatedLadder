@@ -1,0 +1,13 @@
+version: '3'
+services: 
+  ladder:
+    image: spasmodicsoftware/authenticated-ladder:latest
+    volumes:
+      - "./appsettings.json:/app/appsettings.json"
+      - "ladder_sqlite:/database"
+      - "ladder_logs:/logs"
+    restart: always
+    ports: "8080:80"
+volumes:
+  ladder_sqlite:
+  ladder_logs:
