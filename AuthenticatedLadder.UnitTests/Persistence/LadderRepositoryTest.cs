@@ -482,5 +482,60 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 .NotBeNull()
                 .And.BeEquivalentTo(thirdEntry);
         }
+
+        [Fact]
+        public void GetAllEntriesForPlatform_ReturnsAllEntriesForSpecifiedLadder()
+        {
+            var TopN = 1;
+            var ladderId = "myLadder";
+            var platform = "PC";
+            //Here we add entries to db using context directly to test repository
+            var secondPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "second player",
+                Score = 1000
+            };
+            var firstPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "first player",
+                Score = 999
+            };
+            var anotherPlatformPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = "AnotherPlatform",
+                Username = "second player",
+                Score = 1
+            };
+            var anotherLadderPlayer = new LadderEntry
+            {
+                LadderId = "AnotherLadder",
+                Platform = "AnotherPlatform",
+                Username = "second player",
+                Score = 1
+            };
+
+            _dbContext.Ladders.Add(secondPlayer);
+            _dbContext.Ladders.Add(firstPlayer);
+            _dbContext.Ladders.Add(anotherPlatformPlayer);
+            _dbContext.Ladders.Add(anotherLadderPlayer);
+
+            _dbContext.SaveChanges();
+
+            var repository = CreateInMemoryRepository(TopN);
+
+            repository
+                .GetAllEntriesForPlatform(ladderId)
+                .Should()
+                .HaveCount(3)
+                .And.ContainEquivalentOf(anotherPlatformPlayer)
+                .And.ContainEquivalentOf(firstPlayer)
+                .And.ContainEquivalentOf(secondPlayer);
+        }
+
     }
 }

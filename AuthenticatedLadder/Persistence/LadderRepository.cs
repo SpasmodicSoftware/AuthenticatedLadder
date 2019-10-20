@@ -86,5 +86,13 @@ namespace AuthenticatedLadder.Persistence
 
             return result;
         }
+
+        public List<LadderEntry> GetAllEntriesForPlatform(string ladderId)
+        {
+            var result = _dbContext.Ladders
+                .Where(l => l.LadderId == ladderId)
+                .ToList();
+            return result;
+        }
     }
 }
