@@ -268,7 +268,7 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
             var myLadderId = "My Ladder Id";
 
             _repository
-                .Setup(r => r.GetTopEntries(myLadderId))
+                .Setup(r => r.GetAllEntriesForLadder(myLadderId))
                 .Returns(new List<LadderEntry>());
 
             var service = new LadderService(_repository.Object, _logger.Object);
