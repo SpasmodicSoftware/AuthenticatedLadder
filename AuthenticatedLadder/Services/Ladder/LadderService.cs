@@ -74,5 +74,22 @@ namespace AuthenticatedLadder.Services.Ladder
             }
             return result;
         }
+
+        public List<LadderEntry> GetAllEntriesForLadder(string ladderId)
+        {
+            var result = new List<LadderEntry>();
+            if (!string.IsNullOrEmpty(ladderId))
+            {
+                try
+                {
+                    result = _repository.GetAllEntriesForLadder(ladderId);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "GetAllEntriesForLadder failed to read from repository");
+                }
+            }
+            return result;
+        }
     }
 }

@@ -246,5 +246,73 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
 
             _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once());
         }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void GetAllEntriesForLadder_ReturnsEmptyListIfLadderIdIsNullOrEmpty(string ladderId)
+        {
+
+            var service = new LadderService(_repository.Object, _logger.Object);
+
+            service
+                .GetAllEntriesForLadder(ladderId)
+                .Should()
+                .NotBeNull()
+                .And.BeEmpty();
+        }
+
+        [Fact]
+        public void GetAllEntriesForLadder_ReturnsEmptyListIfLadderIdIsOkButServerHasNoEntryForThatLadder()
+        {
+            var myLadderId = "My Ladder Id";
+
+            _repository
+                .Setup(r => r.GetTopEntries(myLadderId))
+                .Returns(new List<LadderEntry>());
+
+            var service = new LadderService(_repository.Object, _logger.Object);
+
+            var result = service.GetAllEntriesForLadder(myLadderId);
+
+            result
+                .Should()
+                .BeEmpty();
+        }
+
+        [Fact]
+        public void GetAllEntriesForLadder_ReturnsAllEntriesForGivenLadder()
+        {
+            var myLadderId = "My Ladder Id";
+            var myEntry = new LadderEntry
+            {
+                LadderId = myLadderId,
+                Platform = "PC",
+                Score = 123,
+                Username = "My Username"
+            };
+            var myLadderList = new List<LadderEntry>
+            {
+                new LadderEntry(),
+                new LadderEntry(),
+                new LadderEntry(),
+                new LadderEntry(),
+            };
+            myLadderList.Add(myEntry);
+
+            _repository
+                .Setup(r => r.GetAllEntriesForLadder(myLadderId))
+                .Returns(myLadderList);
+
+            var service = new LadderService(_repository.Object, _logger.Object);
+
+            var result = service.GetAllEntriesForLadder(myLadderId);
+
+            result
+                .Should()
+                .NotBeEmpty()
+                .And.HaveCount(5)
+                .And.ContainEquivalentOf(myEntry);
+        }
     }
 }

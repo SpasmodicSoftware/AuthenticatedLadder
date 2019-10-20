@@ -7,5 +7,6 @@ namespace AuthenticatedLadder.Services.Ladder
         List<LadderEntry> GetTopEntries(string ladderId);
         LadderEntry Upsert(LadderEntry entry);
         LadderEntry GetEntryForUser(string ladderId, string platform, string username);
+        List<LadderEntry> GetAllEntriesForLadder(string ladderId);
     }
 }
