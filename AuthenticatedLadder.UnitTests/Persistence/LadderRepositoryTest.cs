@@ -529,7 +529,7 @@ namespace AuthenticatedLadder.UnitTests.Persistence
             var repository = CreateInMemoryRepository(TopN);
 
             repository
-                .GetAllEntriesForPlatform(ladderId)
+                .GetAllEntriesForLadder(ladderId)
                 .Should()
                 .HaveCount(3)
                 .And.ContainEquivalentOf(anotherPlatformPlayer)

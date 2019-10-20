@@ -7,7 +7,7 @@ namespace AuthenticatedLadder.DomainModels
         List<LadderEntry> GetTopEntries(string ladderId);
         LadderEntry Upsert(LadderEntry entry);
         LadderEntry GetEntryForUser(string ladderId, string platform, string username);
-        List<LadderEntry> GetAllEntriesForPlatform(string ladderId);
+        List<LadderEntry> GetAllEntriesForLadder(string ladderId);
         //long GetLadderEntriesCount(string ladderId);
     }
 }
