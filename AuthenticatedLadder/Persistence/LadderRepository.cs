@@ -94,5 +94,22 @@ namespace AuthenticatedLadder.Persistence
                 .ToList();
             return result;
         }
+
+        public bool DeleteEntry(string ladderId, string platform, string username)
+        {
+            var deleted = false;
+            var currentEntry = _dbContext.Ladders
+                .FirstOrDefault(l => l.LadderId == ladderId
+                                     && l.Platform == platform
+                                     && l.Username == username);
+            if(currentEntry != null)
+            {
+                _dbContext.Ladders.Remove(currentEntry);
+                _dbContext.SaveChanges();
+                deleted = true;
+            }
+
+            return deleted;
+        }
     }
 }

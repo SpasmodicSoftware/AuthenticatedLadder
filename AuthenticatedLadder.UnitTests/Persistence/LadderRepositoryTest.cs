@@ -537,5 +537,96 @@ namespace AuthenticatedLadder.UnitTests.Persistence
                 .And.ContainEquivalentOf(secondPlayer);
         }
 
+        [Fact]
+        public void DeleteEntry_ReturnsFalseWhenDatabaseIsEmpty()
+        {
+            var repository = CreateInMemoryRepository(1);
+
+            repository.DeleteEntry("foo", "bar", "baz")
+                .Should()
+                .BeFalse();
+        }
+
+        [Fact]
+        public void DeleteEntry_ReturnsFalseWhenGivenEntryIsNotInTheDatabaseAndDoesntRemoveTheEntry()
+        {
+            var TopN = 1;
+            var ladderId = "myLadder";
+            var platform = "PC";
+            //Here we add entries to db using context directly to test repository
+            var secondPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "second player",
+                Score = 1000
+            };
+            var firstPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = "first player",
+                Score = 999
+            };
+            var anotherPlatformPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = "AnotherPlatform",
+                Username = "second player",
+                Score = 1
+            };
+            var anotherLadderPlayer = new LadderEntry
+            {
+                LadderId = "AnotherLadder",
+                Platform = "AnotherPlatform",
+                Username = "second player",
+                Score = 1
+            };
+
+            _dbContext.Ladders.Add(secondPlayer);
+            _dbContext.Ladders.Add(firstPlayer);
+            _dbContext.Ladders.Add(anotherPlatformPlayer);
+            _dbContext.Ladders.Add(anotherLadderPlayer);
+
+            _dbContext.SaveChanges();
+
+            var repository = CreateInMemoryRepository(TopN);
+
+            repository.DeleteEntry("foo", "bar", "baz")
+               .Should()
+               .BeFalse();
+
+            _dbContext.Ladders.Count()
+                .Should().Be(4);
+        }
+
+        [Fact]
+        public void DeleteEntry_ReturnsTrueWhenGivenEntryIsInTheDatabaseAndRemovesTheEntry()
+        {
+            var TopN = 1;
+            var ladderId = "myLadder";
+            var platform = "PC";
+            var playerName = "Giampaolo";
+            //Here we add entries to db using context directly to test repository
+            var secondPlayer = new LadderEntry
+            {
+                LadderId = ladderId,
+                Platform = platform,
+                Username = playerName,
+                Score = 1000
+            };
+            _dbContext.Ladders.Add(secondPlayer);
+            _dbContext.SaveChanges();
+
+            var repository = CreateInMemoryRepository(TopN);
+
+            repository.DeleteEntry(ladderId, platform, playerName)
+              .Should()
+              .BeTrue();
+
+            _dbContext.Ladders.Count()
+                .Should().Be(0);
+        }
+
     }
 }
