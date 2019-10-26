@@ -117,8 +117,8 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [Fact(Skip = "TODO")]
-        public async Task Get_EmptyArrayIsAValidPayload()
+        [Fact]
+        public async Task Get_EmptyArrayIsNotAValidPayload()
         {
             var testSecretKey = "TestSecretKey";
             var client = _factory.WithWebHostBuilder(builder =>
@@ -144,13 +144,7 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
 
             var response = await client.GetAsync("/echo");
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-            var responsePayload = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
-
-            responsePayload
-                .Should()
-                .BeEquivalentTo(payload);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
     }
