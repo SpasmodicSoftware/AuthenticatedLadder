@@ -158,5 +158,38 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
 
             result.Should().BeEmpty();
         }
+
+        [Fact]
+        public async Task DeleteEntry_ReturnsOkWhenEntryExists()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload("{}"));
+
+            var response = await client.DeleteAsync("/ladder/existingLadder/Nintendo360/Ultimo");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            //TODO check if logger fires
+        }
+
+        [Fact]
+        public async Task DeleteEntry_ReturnsUnauthorizedIfNotValidJWTPayload()
+        {
+            var client = _factory.CreateClient();
+
+            var response = await client.DeleteAsync("/ladder/existingLadder/Nintendo360/Ultimo");
+
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task DeleteEntry_ReturnsNotFoundIfEntryDoesntExist()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload("{}"));
+
+            var response = await client.DeleteAsync("/ladder/existingLadder/Nintendo360/nonessiste");
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
     }
 }

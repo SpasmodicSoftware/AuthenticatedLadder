@@ -60,5 +60,16 @@ namespace AuthenticatedLadder.Controllers
         {
             return _ladderService.GetAllEntriesForLadder(ladderId);
         }
+
+        [Route("{ladderId}/{platform}/{username}"), HttpDelete]
+        public ActionResult DeleteEntry(string ladderId, string platform, string username)
+        {
+            if(_ladderService.DeleteEntry(ladderId, platform, username))
+            {
+                _logger.LogInformation($"Entry <{platform},{username}> deleted from ladder <{ladderId}>");
+                return Ok();
+            }
+            return NotFound();
+        }
     }
 }
