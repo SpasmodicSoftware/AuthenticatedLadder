@@ -314,5 +314,57 @@ namespace AuthenticatedLadder.UnitTests.Services.Ladder
                 .And.HaveCount(5)
                 .And.ContainEquivalentOf(myEntry);
         }
+
+        [Fact]
+        public void DeleteEntry_ReturnsFalseWhenEntryDoesNotExist()
+        {
+            var myLadder = "myLadder";
+            var myPlatform = "myPlatform";
+            var myUsername = "myUsername";
+            _repository
+                .Setup(r => r.DeleteEntry(myLadder, myPlatform, myUsername))
+                .Returns(false);
+
+            var service = new LadderService(_repository.Object, _logger.Object);
+
+            var result = service.DeleteEntry(myLadder, myPlatform, myUsername);
+
+            result.Should().Be(false);
+
+        }
+
+        [Fact]
+        public void DeleteEntry_ReturnsTrueWhenEntryExists()
+        {
+            var myLadder = "myLadder";
+            var myPlatform = "myPlatform";
+            var myUsername = "myUsername";
+            _repository
+                .Setup(r => r.DeleteEntry(myLadder, myPlatform, myUsername))
+                .Returns(true);
+
+            var service = new LadderService(_repository.Object, _logger.Object);
+
+            var result = service.DeleteEntry(myLadder, myPlatform, myUsername);
+
+            result.Should().Be(true);
+        }
+
+        [Fact]
+        public void DeleteEntry_LogsErrorWhenRepositoryThrows()
+        {
+            var myLadder = "myLadder";
+            var myPlatform = "myPlatform";
+            var myUsername = "myUsername";
+            var exceptionMessage = "An error occurred because blablabalabla";
+            _repository
+                .Setup(r => r.DeleteEntry(myLadder, myPlatform, myUsername))
+               .Throws(new Exception(exceptionMessage));
+
+            var service = new LadderService(_repository.Object, _logger.Object);
+            var result = service.DeleteEntry(myLadder, myPlatform, myUsername);
+
+            _logger.Verify(l => l.LogError(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once(), "Logger not called");
+        }
     }
 }

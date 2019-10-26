@@ -91,5 +91,19 @@ namespace AuthenticatedLadder.Services.Ladder
             }
             return result;
         }
+
+        public bool DeleteEntry(string ladderId, string platform, string playerName)
+        {
+            var result = false;
+            try
+            {
+                result = _repository.DeleteEntry(ladderId, platform, playerName);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "DeleteEntry failed to delete from repository");
+            }
+            return result;
+        }
     }
 }
