@@ -54,5 +54,11 @@ namespace AuthenticatedLadder.Controllers
             }
             return Ok(result);
         }
+
+        [Route("{ladderId}/all"), HttpGet]
+        public IEnumerable<LadderEntry> GetAllEntriesForLadder(string ladderId)
+        {
+            return _ladderService.GetAllEntriesForLadder(ladderId);
+        }
     }
 }

@@ -133,5 +133,30 @@ namespace AuthenticatedLadder.IntegrationTests.Controllers
             result.Position.Should().Be(3);
         }
 
+        [Fact]
+        public async Task GetAllEntriesForLadder_ReturnsUnauthorizedIfNotValidJWTPayload()
+        {
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync("/ladder/myLadder/all");
+
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task GetAllEntriesForLadder_ReturnsEmptyListIfValidJWTPayloadButNoLadderFound()
+        {
+            var client = _factory.CreateClient();
+
+            client.DefaultRequestHeaders.Add(_factory.JWTHeaderName, PrepareJWTPayload("{}"));
+
+            var response = await client.GetAsync("/ladder/notFoundLadder/all");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var result = await response.Content.ReadAsAsync<List<LadderEntry>>();
+
+            result.Should().BeEmpty();
+        }
     }
 }
